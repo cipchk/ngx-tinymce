@@ -9,7 +9,9 @@ const globals = {
     '@angular/forms': 'ng.forms',
     '@angular/common/http': 'ng.common.http',
 
-    'rxjs/Subject': 'Rx'
+    'rxjs/Subject': 'Rx',
+    'rxjs/Subscription': 'Rx',
+    'rxjs/operators': 'Rx.Observable.prototype'
 };
 
 module.exports = {

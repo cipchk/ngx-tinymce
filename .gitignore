@@ -3,6 +3,7 @@
 /node_modules
 npm-debug.log
 .lib
+.ng_build
 
 # WebStorm
 .idea

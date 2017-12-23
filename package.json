@@ -1,6 +1,6 @@
 {
   "name": "ngx-tinymce",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "description": "Angular for tinymce",
   "main": "./bundles/ngx-tinymce.umd.js",
