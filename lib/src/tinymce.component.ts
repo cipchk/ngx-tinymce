@@ -1,5 +1,8 @@
-import { Component, forwardRef, OnChanges, OnDestroy, Input, OnInit, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, TemplateRef, Output, EventEmitter, SimpleChanges } from '@angular/core';
+import { Component, forwardRef, OnChanges, OnDestroy, Input, OnInit, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, TemplateRef, Output, EventEmitter, SimpleChanges, Optional } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { Router, ActivationEnd } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
+import { debounceTime, filter } from 'rxjs/operators';
 import { ScriptService } from './script.service';
 import { TinymceOptions } from './tinymce.options';
 
@@ -25,6 +28,7 @@ export class TinymceComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     private instance: any;
     private value: string;
     private inited = false;
+    private route$: Subscription;
     load = true;
     id = `_tinymce-${Math.random().toString(36).substring(2)}`;
     onChange: any = Function.prototype;
@@ -36,7 +40,6 @@ export class TinymceComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     _loadingTpl: TemplateRef<any>;
     @Input()
     set loading(value: string | TemplateRef<any>) {
-        console.log(value);
         if (value instanceof TemplateRef)
             this._loadingTpl = value;
         else
@@ -46,6 +49,7 @@ export class TinymceComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     constructor(
         private defConfig: TinymceOptions,
         private ss: ScriptService,
+        @Optional() private router: Router,
         private cd: ChangeDetectorRef
     ) {}
 
@@ -56,11 +60,6 @@ export class TinymceComponent implements OnInit, AfterViewInit, OnChanges, OnDes
         if (this.instance) return;
 
         if (this.defConfig.baseURL) tinymce.baseURL = this.defConfig.baseURL;
-
-        setTimeout(() => {
-            this.load = false;
-            this.cd.markForCheck();
-        }, 100);
 
         const userOptions = Object.assign({ }, this.defConfig.config, this.config);
 
@@ -84,6 +83,9 @@ export class TinymceComponent implements OnInit, AfterViewInit, OnChanges, OnDes
                 if (typeof userOptions.init_instance_callback === 'function') {
                     userOptions.init_instance_callback(editor);
                 }
+
+                this.load = false;
+                this.cd.markForCheck();
             }
         });
         if (userOptions.auto_focus) options.auto_focus = this.id;
@@ -100,12 +102,18 @@ export class TinymceComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     }
 
     ngOnInit() {
-        console.log('ngOnInit', this.id);
         this.inited = true;
+        this.route$ = <any>this.router.events.pipe(
+            filter(e => e instanceof ActivationEnd),
+            debounceTime(100),
+            filter(e => !!document.querySelector('#' + this.id))
+        ).subscribe(res => {
+            this.destroy();
+            this.init();
+        });
     }
 
     ngAfterViewInit(): void {
-        console.log('ngAfterViewInit', this.id);
         // 已经存在对象无须进入懒加载模式
         if (window.tinymce) {
             this.init();
@@ -128,6 +136,7 @@ export class TinymceComponent implements OnInit, AfterViewInit, OnChanges, OnDes
 
     ngOnDestroy(): void {
         this.destroy();
+        if (this.route$) this.route$.unsubscribe();
     }
 
     writeValue(value: string): void {
