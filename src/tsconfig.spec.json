@@ -14,7 +14,7 @@
     "test.ts"
   ],
   "include": [
-    "**/*.spec.ts",
+    "../lib/**/*.spec.ts",
     "**/*.d.ts"
   ]
 }
