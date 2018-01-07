@@ -140,7 +140,8 @@ export class TinymceComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     }
 
     writeValue(value: string): void {
-        this.value = value;
+        // value should be NOT NULL
+        this.value = value || '';
         if (this.instance) {
             this.instance.setContent(this.value);
         }
