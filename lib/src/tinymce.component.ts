@@ -1,8 +1,5 @@
 import { Component, forwardRef, OnChanges, OnDestroy, Input, OnInit, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, TemplateRef, Output, EventEmitter, SimpleChanges, Optional } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
-import { Router, ActivationEnd } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
-import { debounceTime, filter } from 'rxjs/operators';
 import { ScriptService } from './script.service';
 import { TinymceOptions } from './tinymce.options';
 
@@ -12,23 +9,25 @@ declare const tinymce: any;
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'tinymce',
-    template: `<textarea id="{{id}}" class="tinymce-selector"></textarea>
+    template: `
+    <textarea id="{{id}}" class="tinymce-selector"></textarea>
     <div class="loading" *ngIf="load">
         <ng-container *ngIf="_loading; else _loadingTpl">{{_loading}}</ng-container>
-    </div>`,
+    </div>
+    `,
     styles: [ `:host .tinymce-selector{display:none}` ],
     providers: [{
         provide: NG_VALUE_ACCESSOR,
         useExisting: forwardRef(() => TinymceComponent),
         multi: true
     }],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    preserveWhitespaces: false
 })
 export class TinymceComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy, ControlValueAccessor {
     private instance: any;
     private value: string;
     private inited = false;
-    private route$: Subscription;
     load = true;
     id = `_tinymce-${Math.random().toString(36).substring(2)}`;
     onChange: any = Function.prototype;
@@ -49,7 +48,6 @@ export class TinymceComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     constructor(
         private defConfig: TinymceOptions,
         private ss: ScriptService,
-        @Optional() private router: Router,
         private cd: ChangeDetectorRef
     ) {}
 
@@ -103,14 +101,6 @@ export class TinymceComponent implements OnInit, AfterViewInit, OnChanges, OnDes
 
     ngOnInit() {
         this.inited = true;
-        this.route$ = <any>this.router.events.pipe(
-            filter(e => e instanceof ActivationEnd),
-            debounceTime(100),
-            filter(e => !!document.querySelector('#' + this.id))
-        ).subscribe(res => {
-            this.destroy();
-            this.init();
-        });
     }
 
     ngAfterViewInit(): void {
@@ -136,7 +126,12 @@ export class TinymceComponent implements OnInit, AfterViewInit, OnChanges, OnDes
 
     ngOnDestroy(): void {
         this.destroy();
-        if (this.route$) this.route$.unsubscribe();
+    }
+
+    // reuse-tab: http://ng-alain.com/components/reuse-tab#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F
+    _onReuseInit() {
+        this.destroy();
+        this.init();
     }
 
     writeValue(value: string): void {

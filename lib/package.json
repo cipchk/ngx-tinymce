@@ -1,3 +1,24 @@
 {
-  "name": "ngx-tinymce"
+  "name": "ngx-tinymce",
+  "version": "1.0.2",
+  "license": "MIT",
+  "description": "Angular for tinymce",
+  "main": "./bundles/ngx-tinymce.umd.js",
+  "author": "cipchk",
+  "homepage": "https://cipchk.github.io/ngx-tinymce/",
+  "bugs": {
+    "url": "https://github.com/cipchk/ngx-tinymce/issues"
+  },
+  "keywords": [
+      "angular tinymce",
+      "ngx-tinymce",
+      "ng-tinymce",
+      "ng tinymce",
+      "tinymce"
+  ],
+  "peerDependencies": {
+    "@angular/core": "^5.0.0",
+    "@angular/common": "^5.0.0",
+    "@angular/forms": "^5.0.0"
+  }
 }

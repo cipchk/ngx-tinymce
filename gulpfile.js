@@ -20,7 +20,7 @@ gulp.task('bundle', bundleUmd);
 gulp.task('bump', bumpVersions);
 
 function bumpVersions() {
-    gulp.src([ './package.json'], {base: './'})
+    gulp.src([ './package.json', './lib/package.json' ], {base: './'})
         .pipe(bump({
             version: VERSION
         }))
@@ -53,7 +53,7 @@ function copyResources() {
         `./LICENSE`,
         `./README.md`,
         `./rollup.config.js`,
-        `./package.json`,
+        `${paths.build}/package.json`,
         `${paths.build}/**/*.html`,
         `${paths.build}/**/*.css`,
         `${paths.build}/**/*.less`
