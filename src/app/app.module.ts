@@ -5,31 +5,30 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HighlightJsModule } from 'ngx-highlight-js';
-import { NgxTinymceModule } from '../../lib/index';
+import { NgxTinymceModule } from 'ngx-tinymce';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { OtherComponent } from './other/other.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HomeComponent, OtherComponent
-  ],
+  declarations: [AppComponent, HomeComponent, OtherComponent],
   imports: [
     BrowserModule,
     CommonModule,
     FormsModule,
     HttpClientModule,
     HighlightJsModule,
-    RouterModule.forRoot([
+    RouterModule.forRoot(
+      [
         { path: '', component: HomeComponent },
-        { path: 'other', component: OtherComponent }
-    ], { useHash: true }),
-    NgxTinymceModule.forRoot({
-    })
+        { path: 'other', component: OtherComponent },
+      ],
+      { useHash: true },
+    ),
+    NgxTinymceModule.forRoot({}),
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

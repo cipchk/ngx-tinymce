@@ -14,9 +14,9 @@ describe('Component: ngx-tinymce', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [TestComponent],
-      imports: [NgxTinymceModule]
+      imports: [NgxTinymceModule],
     });
-    TestBed.overrideComponent(TestComponent, {set: {template: html}});
+    TestBed.overrideComponent(TestComponent, { set: { template: html } });
     fixture = TestBed.createComponent(TestComponent);
     context = fixture.componentInstance;
     element = fixture.nativeElement.querySelector('#c1');
@@ -31,7 +31,6 @@ describe('Component: ngx-tinymce', () => {
 
 @Component({
   selector: 'app-tinymce-test',
-  template: ''
+  template: '',
 })
-class TestComponent {
-}
+class TestComponent {}
