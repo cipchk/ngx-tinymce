@@ -13,6 +13,7 @@ import {
   EventEmitter,
   SimpleChanges,
   Optional,
+  NgZone,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { ScriptService } from './script.service';
@@ -46,13 +47,18 @@ export class TinymceComponent
   private value: string;
   private inited = false;
   load = true;
-  id = `_tinymce-${Math.random()
-    .toString(36)
-    .substring(2)}`;
-  onChange: any = Function.prototype;
-  onTouched: any = Function.prototype;
+  id = `_tinymce-${Math.random().toString(36).substring(2)}`;
+
+  private onChange: (value: string) => void;
+  private onTouched: () => void;
 
   @Input() config: any;
+  @Input()
+  set disabled(value: boolean) {
+    this._disabled = value;
+    this.setDisabled();
+  }
+  private _disabled = false;
 
   _loading: string;
   _loadingTpl: TemplateRef<any>;
@@ -66,6 +72,7 @@ export class TinymceComponent
     private defConfig: TinymceOptions,
     private ss: ScriptService,
     private cd: ChangeDetectorRef,
+    private zone: NgZone
   ) {}
 
   private init() {
@@ -88,8 +95,7 @@ export class TinymceComponent
           this.instance = editor;
           editor.on('change keyup', () => {
             this.value = editor.getContent();
-            this.onChange(this.value);
-            this.onTouched(this.value);
+            this.zone.run(() => this.onChange(this.value));
           });
           if (typeof userOptions.setup === 'function') {
             userOptions.setup(editor);
@@ -117,6 +123,15 @@ export class TinymceComponent
     this.instance.off();
     this.instance.remove('#' + this.id);
     this.instance = null;
+  }
+
+  private setDisabled() {
+    if (!this.instance) return;
+    if (this._disabled) {
+      this.instance.disabled();
+    } else {
+      this.instance.setEnabled();
+    }
   }
 
   ngOnInit() {
@@ -173,11 +188,7 @@ export class TinymceComponent
   }
 
   setDisabledState(isDisabled: boolean): void {
-    if (!this.instance) return;
-    if (isDisabled) {
-      this.instance.disabled();
-    } else {
-      this.instance.setEnabled();
-    }
+    this.disabled = isDisabled;
+    this.setDisabled();
   }
 }
