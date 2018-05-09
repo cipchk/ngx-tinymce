@@ -2,6 +2,10 @@
 
 [Tinymce](https://www.tinymce.com/) Components build with [Angular](https://angular.io/).
 
+## DEMO
+
+- [Github](https://cipchk.github.io/ngx-tinymce/)
+- [Stackblitz](https://stackblitz.com/edit/ngx-tinymce)
 
 ## Installation instructions
 
