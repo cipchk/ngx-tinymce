@@ -1,6 +1,6 @@
 {
   "name": "ngx-tinymce",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "main": "./bundles/tinymce.umd.js",
   "module": "./esm5/tinymce.js",
   "es2015": "./esm2015/tinymce.js",
@@ -22,7 +22,6 @@
     "release:next": "bash ./build.sh && cd publish && npm publish --access public --tag next",
     "release": "bash ./build.sh && cd publish && npm publish --access public"
   },
-  "dependencies": {},
   "peerDependencies": {
     "@angular/core": "^6.0.0",
     "@angular/common": "^6.0.0",
