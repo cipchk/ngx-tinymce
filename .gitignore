@@ -8,6 +8,7 @@
 /publish-es5
 /publish-es2015
 /publish
+/yarn.lock
 
 # dependencies
 /node_modules
