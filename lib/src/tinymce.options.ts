@@ -5,6 +5,6 @@ export class TinymceOptions {
   fileName ? = 'tinymce.min.js';
   /** 默认配置项，对全局 Tinymce 有效 */
   config?: any;
-
-  [key: string]: any;
+  /** 延迟加载（单位：毫秒），默认：`0` */
+  delay?: number;
 }

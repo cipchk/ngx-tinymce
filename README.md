@@ -23,13 +23,13 @@ Import the `ngx-tinymce` in to your root `AppModule`.
 import { NgxTinymceModule } from 'ngx-tinymce';
 
 @NgModule({
-    imports: [
-        NgxTinymceModule.forRoot({
-            baseURL: './assets/tinymce/',
-            // or cdn
-            baseURL: '//cdn.bootcss.com/tinymce/4.7.4/'
-        })
-    ]
+  imports: [
+    NgxTinymceModule.forRoot({
+      baseURL: './assets/tinymce/',
+      // or cdn
+      baseURL: '//cdn.bootcss.com/tinymce/4.7.13/'
+    })
+  ]
 })
 export class AppModule { }
 ```
@@ -44,7 +44,7 @@ import { Component } from '@angular/core';
   template: `<tinymce [(ngModel)]="html"></tinymce>`
 })
 export class AppComponent  {
-    html = ``;
+  html = ``;
 }
 ```
 
@@ -59,6 +59,7 @@ export class AppComponent  {
 | ------- | ------------- | ----- | ----- |
 | config | `any` |  | see [configure](https://www.tinymce.com/docs/configure/integration-and-setup/) |
 | loading | `string,TemplateRef` | - | Loading status of tinymce |
+| delay | `number` | 0 | Delayed rendering, unit is 'millisecond' |
 
 ## Troubleshooting
 

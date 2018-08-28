@@ -9,10 +9,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   TemplateRef,
-  Output,
-  EventEmitter,
   SimpleChanges,
-  Optional,
   NgZone,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
@@ -31,7 +28,13 @@ declare const tinymce: any;
   </div>
   `,
   preserveWhitespaces: false,
-  styles: [`:host .tinymce-selector{display:none}`],
+  styles: [
+    `
+      :host .tinymce-selector {
+        display: none;
+      }
+    `,
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -47,12 +50,15 @@ export class TinymceComponent
   private value: string;
   private inited = false;
   load = true;
-  id = `_tinymce-${Math.random().toString(36).substring(2)}`;
+  id = `_tinymce-${Math.random()
+    .toString(36)
+    .substring(2)}`;
 
   private onChange: (value: string) => void;
   private onTouched: () => void;
 
-  @Input() config: any;
+  @Input()
+  config: any;
   @Input()
   set disabled(value: boolean) {
     this._disabled = value;
@@ -68,28 +74,45 @@ export class TinymceComponent
     else this._loading = value;
   }
 
+  /** 延迟初始化 */
+  @Input()
+  delay = 0;
+
   constructor(
     private defConfig: TinymceOptions,
     private ss: ScriptService,
     private cd: ChangeDetectorRef,
-    private zone: NgZone
+    private zone: NgZone,
   ) {}
+
+  private initDelay() {
+    if (this.delay > 0) {
+      setTimeout(() => this.init(), this.delay);
+    } else {
+      this.init();
+    }
+  }
 
   private init() {
     if (!window.tinymce) throw new Error('tinymce js文件加载失败');
 
+    const { defConfig, config, id } = this;
     if (this.instance) return;
 
-    if (this.defConfig.baseURL) tinymce.baseURL = this.defConfig.baseURL;
+    if (defConfig.baseURL) {
+      let url = '' + defConfig.baseURL;
+      if (url.endsWith('/')) url = url.substr(0, url.length - 1);
+      tinymce.baseURL = url;
+    }
 
-    const userOptions = Object.assign({}, this.defConfig.config, this.config);
+    const userOptions = Object.assign({}, defConfig.config, config);
 
     const options = Object.assign(
       {
-        selector: `#` + this.id,
+        selector: `#` + id,
       },
-      this.defConfig.config,
-      this.config,
+      defConfig.config,
+      config,
       {
         setup: (editor: any) => {
           this.instance = editor;
@@ -109,7 +132,10 @@ export class TinymceComponent
         },
       },
     );
-    if (userOptions.auto_focus) options.auto_focus = this.id;
+    if (userOptions.auto_focus) {
+      options.auto_focus = id;
+    }
+
     tinymce.init(options);
 
     this.load = false;
@@ -141,24 +167,23 @@ export class TinymceComponent
   ngAfterViewInit(): void {
     // 已经存在对象无须进入懒加载模式
     if (window.tinymce) {
-      this.init();
+      this.initDelay();
       return;
     }
 
-    const baseURL = this.defConfig && this.defConfig.baseURL;
-    const fileName = this.defConfig && this.defConfig.fileName;
+    const { defConfig } = this;
+    const baseURL = defConfig && defConfig.baseURL;
+    const fileName = defConfig && defConfig.fileName;
     this.ss
       .load((baseURL || './assets/tinymce/') + (fileName || 'tinymce.min.js'))
       .getChangeEmitter()
-      .subscribe(res => {
-        this.init();
-      });
+      .subscribe(() => this.initDelay());
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.inited && changes.config) {
       this.destroy();
-      this.init();
+      this.initDelay();
     }
   }
 
@@ -169,7 +194,7 @@ export class TinymceComponent
   // reuse-tab: http://ng-alain.com/components/reuse-tab#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F
   _onReuseInit() {
     this.destroy();
-    this.init();
+    this.initDelay();
   }
 
   writeValue(value: string): void {

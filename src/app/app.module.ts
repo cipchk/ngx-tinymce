@@ -26,7 +26,9 @@ import { OtherComponent } from './other/other.component';
       ],
       { useHash: true },
     ),
-    NgxTinymceModule.forRoot({}),
+    NgxTinymceModule.forRoot({
+      baseURL: '//cdn.bootcss.com/tinymce/4.7.13/',
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent],
