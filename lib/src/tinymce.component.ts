@@ -13,7 +13,7 @@ import {
   NgZone,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
-import { ScriptService } from './script.service';
+import { ScriptService } from './tinymce.script.service';
 import { TinymceOptions } from './tinymce.options';
 
 declare const window: any;

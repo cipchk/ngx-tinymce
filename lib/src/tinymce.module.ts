@@ -1,9 +1,9 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { TinymceOptions } from './src/tinymce.options';
-import { TinymceComponent } from './src/tinymce.component';
-import { ScriptService } from './src/script.service';
+import { TinymceOptions } from './tinymce.options';
+import { TinymceComponent } from './tinymce.component';
+import { ScriptService } from './tinymce.script.service';
 
 @NgModule({
   imports: [CommonModule],
