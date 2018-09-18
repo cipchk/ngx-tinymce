@@ -1,10 +1,6 @@
 {
   "name": "ngx-tinymce",
-  "version": "2.1.0",
-  "main": "./bundles/tinymce.umd.js",
-  "module": "./esm5/tinymce.js",
-  "es2015": "./esm2015/tinymce.js",
-  "typings": "./tinymce.d.ts",
+  "version": "2.1.1",
   "description": "Angular for tinymce",
   "license": "MIT",
   "author": "cipchk",
