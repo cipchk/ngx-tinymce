@@ -1,10 +1,6 @@
 {
   "name": "ngx-tinymce",
-  "version": "2.1.0",
-  "main": "./bundles/tinymce.umd.js",
-  "module": "./esm5/tinymce.js",
-  "es2015": "./esm2015/tinymce.js",
-  "typings": "./tinymce.d.ts",
+  "version": "2.1.1",
   "description": "Angular for tinymce",
   "license": "MIT",
   "author": "cipchk",
@@ -15,7 +11,7 @@
   "scripts": {
     "analyze": "ng build --prod --build-optimizer --stats-json",
     "lint": "tslint -p tsconfig.json -c tslint.json 'lib/*/*.ts'",
-    "test": "ng test --code-coverage",
+    "test": "ng test --code-coverage --watch=false",
     "site:build": "ng build --prod --build-optimizer",
     "site:gh": "ng build --prod --build-optimizer --base-href /ngx-tinymce/ && gh-pages -d ./dist",
     "build": "node scripts/build.js",

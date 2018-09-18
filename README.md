@@ -59,6 +59,7 @@ export class AppComponent  {
 | ------- | ------------- | ----- | ----- |
 | config | `any` |  | see [configure](https://www.tinymce.com/docs/configure/integration-and-setup/) |
 | loading | `string,TemplateRef` | - | Loading status of tinymce |
+| disabled | `boolean` | `false` | Set tinymce mode is `readonly` if `true` |
 | delay | `number` | 0 | Delayed rendering, unit is 'millisecond' |
 
 ## Troubleshooting
