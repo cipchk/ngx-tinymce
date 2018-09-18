@@ -126,6 +126,7 @@ export class TinymceComponent
         },
         init_instance_callback: (editor: any) => {
           if (editor && this.value) editor.setContent(this.value);
+          this.setDisabled();
           if (typeof userOptions.init_instance_callback === 'function') {
             userOptions.init_instance_callback(editor);
           }
@@ -153,11 +154,7 @@ export class TinymceComponent
 
   private setDisabled() {
     if (!this.instance) return;
-    if (this._disabled) {
-      this.instance.disabled();
-    } else {
-      this.instance.setEnabled();
-    }
+    this.instance.setMode(this._disabled ? 'readonly' : 'design');
   }
 
   ngOnInit() {

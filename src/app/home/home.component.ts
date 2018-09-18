@@ -1,4 +1,5 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-home',
@@ -148,4 +149,6 @@ export class HomeComponent {
     obj[key] = value;
     this.config = Object.assign({}, this.config, obj);
   }
+
+  constructor(public san: DomSanitizer) {}
 }
