@@ -27,7 +27,7 @@ import { NgxTinymceModule } from 'ngx-tinymce';
     NgxTinymceModule.forRoot({
       baseURL: './assets/tinymce/',
       // or cdn
-      baseURL: '//cdn.bootcss.com/tinymce/4.7.13/'
+      baseURL: '//cdnjs.cloudflare.com/ajax/libs/tinymce/4.9.0/'
     })
   ]
 })
@@ -61,6 +61,8 @@ export class AppComponent  {
 | loading | `string,TemplateRef` | - | Loading status of tinymce |
 | disabled | `boolean` | `false` | Set tinymce mode is `readonly` if `true` |
 | delay | `number` | 0 | Delayed rendering, unit is 'millisecond' |
+| placeholder | `string` | - | Placeholder for tinymce, **NOTE:** dependent on [tinymce-placeholder](https://github.com/mohan/tinymce-placeholder) |
+| ready | `EventEmitter<any>` | - | Tinymce ready callback |
 
 ## Troubleshooting
 

@@ -4,13 +4,14 @@ import {
   OnChanges,
   OnDestroy,
   Input,
-  OnInit,
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   TemplateRef,
   SimpleChanges,
-  NgZone,
+  ViewEncapsulation,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { ScriptService } from './tinymce.script.service';
@@ -21,20 +22,9 @@ declare const tinymce: any;
 
 @Component({
   selector: 'tinymce',
-  template: `
-  <textarea id="{{id}}" class="tinymce-selector"></textarea>
-  <div class="loading" *ngIf="load">
-    <ng-container *ngIf="_loading; else _loadingTpl">{{_loading}}</ng-container>
-  </div>
-  `,
-  preserveWhitespaces: false,
-  styles: [
-    `
-      :host .tinymce-selector {
-        display: none;
-      }
-    `,
-  ],
+  templateUrl: './tinymce.component.html',
+  styles: [ `tinymce .tinymce-selector { display: none; }` ],
+  encapsulation: ViewEncapsulation.None,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -44,21 +34,17 @@ declare const tinymce: any;
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TinymceComponent
-  implements OnInit, AfterViewInit, OnChanges, OnDestroy, ControlValueAccessor {
-  private instance: any;
+export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, ControlValueAccessor {
+  private _instance: any;
   private value: string;
-  private inited = false;
   load = true;
-  id = `_tinymce-${Math.random()
-    .toString(36)
-    .substring(2)}`;
+  id = `_tinymce-${Math.random().toString(36).substring(2)}`;
 
   private onChange: (value: string) => void;
   private onTouched: () => void;
 
-  @Input()
-  config: any;
+  @Input() config: any;
+  @Input() placeholder: string;
   @Input()
   set disabled(value: boolean) {
     this._disabled = value;
@@ -70,19 +56,25 @@ export class TinymceComponent
   _loadingTpl: TemplateRef<any>;
   @Input()
   set loading(value: string | TemplateRef<any>) {
-    if (value instanceof TemplateRef) this._loadingTpl = value;
-    else this._loading = value;
+    if (value instanceof TemplateRef) {
+      this._loading = null;
+      this._loadingTpl = value;
+    } else {
+      this._loading = value;
+    }
   }
-
   /** 延迟初始化 */
-  @Input()
-  delay = 0;
+  @Input() delay = 0;
+  @Output() ready = new EventEmitter<any>();
+
+  get instance() {
+    return this._instance;
+  }
 
   constructor(
     private defConfig: TinymceOptions,
     private ss: ScriptService,
     private cd: ChangeDetectorRef,
-    private zone: NgZone,
   ) {}
 
   private initDelay() {
@@ -97,7 +89,7 @@ export class TinymceComponent
     if (!window.tinymce) throw new Error('tinymce js文件加载失败');
 
     const { defConfig, config, id } = this;
-    if (this.instance) return;
+    if (this._instance) return;
 
     if (defConfig.baseURL) {
       let url = '' + defConfig.baseURL;
@@ -115,10 +107,11 @@ export class TinymceComponent
       config,
       {
         setup: (editor: any) => {
-          this.instance = editor;
+          this._instance = editor;
           editor.on('change keyup', () => {
             this.value = editor.getContent();
-            this.zone.run(() => this.onChange(this.value));
+            this.onChange(this.value);
+            this.cd.detectChanges();
           });
           if (typeof userOptions.setup === 'function') {
             userOptions.setup(editor);
@@ -130,6 +123,7 @@ export class TinymceComponent
           if (typeof userOptions.init_instance_callback === 'function') {
             userOptions.init_instance_callback(editor);
           }
+          this.ready.emit(this._instance);
         },
       },
     );
@@ -144,21 +138,17 @@ export class TinymceComponent
   }
 
   private destroy() {
-    if (!this.instance) {
+    if (!this._instance) {
       return;
     }
-    this.instance.off();
-    this.instance.remove('#' + this.id);
-    this.instance = null;
+    this._instance.off();
+    this._instance.remove('#' + this.id);
+    this._instance = null;
   }
 
   private setDisabled() {
-    if (!this.instance) return;
-    this.instance.setMode(this._disabled ? 'readonly' : 'design');
-  }
-
-  ngOnInit() {
-    this.inited = true;
+    if (!this._instance) return;
+    this._instance.setMode(this._disabled ? 'readonly' : 'design');
   }
 
   ngAfterViewInit(): void {
@@ -178,7 +168,7 @@ export class TinymceComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.inited && changes.config) {
+    if (this._instance && changes.config) {
       this.destroy();
       this.initDelay();
     }
@@ -197,8 +187,8 @@ export class TinymceComponent
   writeValue(value: string): void {
     // value should be NOT NULL
     this.value = value || '';
-    if (this.instance) {
-      this.instance.setContent(this.value);
+    if (this._instance) {
+      this._instance.setContent(this.value);
     }
   }
 

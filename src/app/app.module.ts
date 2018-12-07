@@ -27,7 +27,7 @@ import { OtherComponent } from './other/other.component';
       { useHash: true },
     ),
     NgxTinymceModule.forRoot({
-      baseURL: '//cdn.bootcss.com/tinymce/4.7.13/',
+      baseURL: '//cdnjs.cloudflare.com/ajax/libs/tinymce/4.9.0/',
     }),
   ],
   providers: [],

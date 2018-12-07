@@ -28,4 +28,8 @@ export class OtherComponent {
       '//www.tinymce.com/css/codepen.min.css',
     ],
   };
+
+  ready(instance: any) {
+    console.log('ready', instance);
+  }
 }

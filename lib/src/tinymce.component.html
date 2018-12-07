@@ -1,0 +1,4 @@
+<textarea id="{{id}}" [placeholder]="placeholder" class="tinymce-selector"></textarea>
+<div class="loading" *ngIf="load">
+  <ng-container *ngIf="_loading; else _loadingTpl">{{_loading}}</ng-container>
+</div>
