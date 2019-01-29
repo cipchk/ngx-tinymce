@@ -10,7 +10,7 @@ export class ScriptService {
 
   constructor(@Inject(DOCUMENT) private doc: any) {}
 
-  getChangeEmitter() {
+  get change() {
     return this.emitter;
   }
 

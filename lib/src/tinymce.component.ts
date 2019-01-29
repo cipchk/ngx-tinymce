@@ -12,6 +12,7 @@ import {
   ViewEncapsulation,
   Output,
   EventEmitter,
+  NgZone,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { ScriptService } from './tinymce.script.service';
@@ -23,7 +24,13 @@ declare const tinymce: any;
 @Component({
   selector: 'tinymce',
   templateUrl: './tinymce.component.html',
-  styles: [ `tinymce .tinymce-selector { display: none; }` ],
+  styles: [
+    `
+      tinymce .tinymce-selector {
+        display: none;
+      }
+    `,
+  ],
   encapsulation: ViewEncapsulation.None,
   providers: [
     {
@@ -34,11 +41,14 @@ declare const tinymce: any;
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, ControlValueAccessor {
+export class TinymceComponent
+  implements AfterViewInit, OnChanges, OnDestroy, ControlValueAccessor {
   private _instance: any;
   private value: string;
   load = true;
-  id = `_tinymce-${Math.random().toString(36).substring(2)}`;
+  id = `_tinymce-${Math.random()
+    .toString(36)
+    .substring(2)}`;
 
   private onChange: (value: string) => void;
   private onTouched: () => void;
@@ -74,15 +84,18 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
   constructor(
     private defConfig: TinymceOptions,
     private ss: ScriptService,
-    private cd: ChangeDetectorRef,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone,
   ) {}
 
   private initDelay() {
-    if (this.delay > 0) {
-      setTimeout(() => this.init(), this.delay);
-    } else {
-      this.init();
-    }
+    this.ngZone.runOutsideAngular(() => {
+      if (this.delay > 0) {
+        setTimeout(() => this.init(), this.delay);
+      } else {
+        this.init();
+      }
+    });
   }
 
   private init() {
@@ -108,11 +121,13 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
       {
         setup: (editor: any) => {
           this._instance = editor;
-          editor.on('change keyup', () => {
-            this.value = editor.getContent();
-            this.onChange(this.value);
-            this.cd.detectChanges();
-          });
+          editor.on('change keyup', () =>
+            this.ngZone.run(() => {
+              this.value = editor.getContent();
+              this.onChange(this.value);
+              this.cdr.detectChanges();
+            }),
+          );
           if (typeof userOptions.setup === 'function') {
             userOptions.setup(editor);
           }
@@ -133,8 +148,10 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
 
     tinymce.init(options);
 
-    this.load = false;
-    this.cd.detectChanges();
+    this.ngZone.run(() => {
+      this.load = false;
+      this.cdr.detectChanges();
+    });
   }
 
   private destroy() {
@@ -163,7 +180,7 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
     const fileName = defConfig && defConfig.fileName;
     this.ss
       .load((baseURL || './assets/tinymce/') + (fileName || 'tinymce.min.js'))
-      .getChangeEmitter()
+      .change
       .subscribe(() => this.initDelay());
   }
 

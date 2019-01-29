@@ -1,6 +1,6 @@
 {
   "name": "ngx-tinymce",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "description": "Angular for tinymce",
   "license": "MIT",
   "author": "cipchk",
@@ -18,26 +18,29 @@
     "release:next": "npm run build && cd publish && npm publish --access public --tag next",
     "release": "npm run build && cd publish && npm publish --access public"
   },
+  "dependencies": {
+    "nu-lazy": "^7.0.0"
+  },
   "devDependencies": {
-    "@angular/animations": "~7.1.0",
-    "@angular/common": "~7.1.0",
-    "@angular/compiler": "~7.1.0",
-    "@angular/core": "~7.1.0",
-    "@angular/forms": "~7.1.0",
-    "@angular/platform-browser": "~7.1.0",
-    "@angular/platform-browser-dynamic": "~7.1.0",
-    "@angular/router": "~7.1.0",
+    "@angular/animations": "~7.2.0",
+    "@angular/common": "~7.2.0",
+    "@angular/compiler": "~7.2.0",
+    "@angular/core": "~7.2.0",
+    "@angular/forms": "~7.2.0",
+    "@angular/platform-browser": "~7.2.0",
+    "@angular/platform-browser-dynamic": "~7.2.0",
+    "@angular/router": "~7.2.0",
     "core-js": "^2.5.4",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.26",
-    "@angular-devkit/build-angular": "~0.11.0",
-    "@angular/cli": "~7.1.1",
-    "@angular/compiler-cli": "~7.1.0",
-    "@angular/language-service": "~7.1.0",
+    "@angular-devkit/build-angular": "~0.12.0",
+    "@angular/cli": "~7.2.3",
+    "@angular/compiler-cli": "~7.2.0",
+    "@angular/language-service": "~7.2.0",
+    "@types/node": "~8.9.4",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
-    "@types/node": "~8.9.4",
     "codelyzer": "~4.5.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
@@ -49,16 +52,22 @@
     "protractor": "~5.4.0",
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
-    "typescript": "~3.1.6",
+    "typescript": "~3.2.2",
     "ngx-highlight-js": "^2.1.0",
     "codecov": "^3.0.0",
-    "ng-packagr": "^4.1.1",
+    "ng-packagr": "^4.7.0",
     "tsickle": "^0.34.0"
   },
   "ngPackage": {
     "lib": {
-      "entryFile": "lib/index.ts"
+      "entryFile": "lib/index.ts",
+      "umdModuleIds": {
+        "nu-lazy": "nu.lazy"
+      }
     },
+    "whitelistedNonPeerDependencies": [
+      "nu-lazy"
+    ],
     "dest": "./publish"
   }
 }
