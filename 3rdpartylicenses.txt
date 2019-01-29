@@ -350,6 +350,3 @@ SOFTWARE.
 
 @angular/forms
 MIT
-
-nu-lazy
-MIT
