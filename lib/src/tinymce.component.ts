@@ -12,9 +12,12 @@ import {
   ViewEncapsulation,
   Output,
   EventEmitter,
+  NgZone,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
-import { ScriptService } from './tinymce.script.service';
+import { InputBoolean, InputNumber } from '@ng-util/util';
+import { NuLazyService } from '@ng-util/lazy';
+import { filter } from 'rxjs/operators';
 import { TinymceOptions } from './tinymce.options';
 
 declare const window: any;
@@ -22,9 +25,21 @@ declare const tinymce: any;
 
 @Component({
   selector: 'tinymce',
-  templateUrl: './tinymce.component.html',
-  styles: [ `tinymce .tinymce-selector { display: none; }` ],
-  encapsulation: ViewEncapsulation.None,
+  exportAs: 'tinymce',
+  template: `
+    <textarea *ngIf="!inline" [attr.id]="id" [attr.placeholder]="placeholder" class="tinymce-selector"></textarea>
+    <div *ngIf="inline" [attr.id]="id"><ng-content></ng-content></div>
+    <div class="loading" *ngIf="load">
+      <ng-container *ngIf="_loading; else _loadingTpl">{{ _loading }}</ng-container>
+    </div>
+  `,
+  styles: [
+    `
+      tinymce .tinymce-selector {
+        display: none;
+      }
+    `,
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -32,6 +47,8 @@ declare const tinymce: any;
       multi: true,
     },
   ],
+  preserveWhitespaces: false,
+  encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, ControlValueAccessor {
@@ -45,6 +62,7 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
 
   @Input() config: any;
   @Input() placeholder: string;
+  @Input() @InputBoolean() inline = false;
   @Input()
   set disabled(value: boolean) {
     this._disabled = value;
@@ -64,31 +82,25 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
     }
   }
   /** 延迟初始化 */
-  @Input() delay = 0;
+  @Input() @InputNumber() delay = 0;
   @Output() ready = new EventEmitter<any>();
 
   get instance() {
     return this._instance;
   }
 
-  constructor(
-    private defConfig: TinymceOptions,
-    private ss: ScriptService,
-    private cd: ChangeDetectorRef,
-  ) {}
+  constructor(private defConfig: TinymceOptions, private lazySrv: NuLazyService, private ngZone: NgZone, private cd: ChangeDetectorRef) {}
 
   private initDelay() {
-    if (this.delay > 0) {
-      setTimeout(() => this.init(), this.delay);
-    } else {
-      this.init();
-    }
+    setTimeout(() => this.init(), Math.min(0, this.delay));
   }
 
   private init() {
-    if (!window.tinymce) throw new Error('tinymce js文件加载失败');
+    if (!window.tinymce) {
+      throw new Error('tinymce js文件加载失败');
+    }
 
-    const { defConfig, config, id } = this;
+    const { defConfig, config, id, inline } = this;
     if (this._instance) return;
 
     if (defConfig.baseURL) {
@@ -96,23 +108,23 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
       if (url.endsWith('/')) url = url.substr(0, url.length - 1);
       tinymce.baseURL = url;
     }
-
     const userOptions = Object.assign({}, defConfig.config, config);
-
     const options = Object.assign(
       {
         selector: `#` + id,
+        inline,
       },
       defConfig.config,
       config,
       {
         setup: (editor: any) => {
           this._instance = editor;
-          editor.on('change keyup', () => {
-            this.value = editor.getContent();
-            this.onChange(this.value);
-            this.cd.detectChanges();
-          });
+          if (this.onChange) {
+            editor.on('change keyup', () => {
+              this.value = editor.getContent();
+              this.ngZone.run(() => this.onChange(this.value));
+            });
+          }
           if (typeof userOptions.setup === 'function') {
             userOptions.setup(editor);
           }
@@ -131,7 +143,7 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
       options.auto_focus = id;
     }
 
-    tinymce.init(options);
+    this.ngZone.runOutsideAngular(() => tinymce.init(options));
 
     this.load = false;
     this.cd.detectChanges();
@@ -141,14 +153,16 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
     if (!this._instance) {
       return;
     }
-    this._instance.off();
-    this._instance.remove('#' + this.id);
+    this.ngZone.runOutsideAngular(() => {
+      this._instance.off();
+      this._instance.remove('#' + this.id);
+    });
     this._instance = null;
   }
 
   private setDisabled() {
     if (!this._instance) return;
-    this._instance.setMode(this._disabled ? 'readonly' : 'design');
+    this.ngZone.runOutsideAngular(() => this._instance.setMode(this._disabled ? 'readonly' : 'design'));
   }
 
   ngAfterViewInit(): void {
@@ -161,10 +175,11 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
     const { defConfig } = this;
     const baseURL = defConfig && defConfig.baseURL;
     const fileName = defConfig && defConfig.fileName;
-    this.ss
-      .load((baseURL || './assets/tinymce/') + (fileName || 'tinymce.min.js'))
-      .getChangeEmitter()
+    const url = (baseURL || './assets/tinymce/') + (fileName || 'tinymce.min.js');
+    this.lazySrv.change
+      .pipe(filter((ls) => ls.length === 1 && ls[0].path === url && ls[0].status === 'ok'))
       .subscribe(() => this.initDelay());
+    this.lazySrv.load(url);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -178,17 +193,11 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
     this.destroy();
   }
 
-  // reuse-tab: http://ng-alain.com/components/reuse-tab#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F
-  _onReuseInit() {
-    this.destroy();
-    this.initDelay();
-  }
-
   writeValue(value: string): void {
     // value should be NOT NULL
     this.value = value || '';
     if (this._instance) {
-      this._instance.setContent(this.value);
+      this.ngZone.runOutsideAngular(() => this._instance.setContent(this.value));
     }
   }
 

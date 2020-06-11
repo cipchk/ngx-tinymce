@@ -1,6 +1,6 @@
 {
   "name": "ngx-tinymce",
-  "version": "9.0.0",
+  "version": "9.1.0",
   "description": "Angular for tinymce",
   "license": "MIT",
   "author": "cipchk",
@@ -17,6 +17,10 @@
     "build": "node scripts/build.js",
     "release:next": "npm run build && cd publish && npm publish --access public --tag next",
     "release": "npm run build && cd publish && npm publish --access public"
+  },
+  "dependencies": {
+    "@ng-util/lazy": "^9.2.0",
+    "@ng-util/util": "^9.2.0"
   },
   "devDependencies": {
     "@angular/animations": "~9.0.7",
@@ -57,6 +61,11 @@
     "lib": {
       "entryFile": "lib/index.ts"
     },
+    "deleteDestPath": true,
+    "whitelistedNonPeerDependencies": [
+      "@ng-util/util",
+      "@ng-util/lazy"
+    ],
     "dest": "./publish"
   }
 }

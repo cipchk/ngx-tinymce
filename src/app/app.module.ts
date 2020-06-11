@@ -10,9 +10,10 @@ import { NgxTinymceModule } from 'ngx-tinymce';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { OtherComponent } from './other/other.component';
+import { InlineComponent } from './inline/inline.component';
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, OtherComponent],
+  declarations: [AppComponent, HomeComponent, OtherComponent, InlineComponent],
   imports: [
     BrowserModule,
     CommonModule,
@@ -23,11 +24,12 @@ import { OtherComponent } from './other/other.component';
       [
         { path: '', component: HomeComponent },
         { path: 'other', component: OtherComponent },
+        { path: 'inline', component: InlineComponent },
       ],
       { useHash: true },
     ),
     NgxTinymceModule.forRoot({
-      baseURL: '//cdnjs.cloudflare.com/ajax/libs/tinymce/4.9.0/',
+      baseURL: '//cdnjs.cloudflare.com/ajax/libs/tinymce/5.3.2/',
     }),
   ],
   providers: [],

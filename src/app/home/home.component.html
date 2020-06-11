@@ -3,27 +3,17 @@
   <div class="card-body">
     <textarea highlight-js>&lt;tinymce [config]="config" [(ngModel)]="html"></tinymce></textarea>
     <tinymce [(ngModel)]="html" [config]="config"></tinymce>
+    Result:
     <div class="card card-outline-secondary mt-3">
       <div class="card-body">
         <blockquote class="card-bodyquote" [innerHTML]="san.bypassSecurityTrustHtml(html)"></blockquote>
       </div>
     </div>
-    <h5 style="border-bottom:1px solid #eee;" class="mt-3 mb-3 pb-3">语言切换</h5>
-    <div class="mb-3">
-      <button type="button" (click)="set('language', 'zh_CN')" class="btn btn-primary btn-sm">zh_CN</button>
-      <button type="button" (click)="set('language', 'en')" class="btn btn-primary btn-sm">en</button>
-    </div>
-  </div>
-</div>
-<div class="card mb-3">
-  <div class="card-header">Classic</div>
-  <div class="card-body">
-    <tinymce [(ngModel)]="html" [config]="config_classic"></tinymce>
   </div>
 </div>
 <div class="card mb-3">
   <div class="card-header">Disabled</div>
   <div class="card-body">
-    <tinymce [(ngModel)]="html" [config]="config_classic" disabled="true"></tinymce>
+    <tinymce [(ngModel)]="html" disabled></tinymce>
   </div>
 </div>
