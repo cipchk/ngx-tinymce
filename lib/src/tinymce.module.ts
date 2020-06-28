@@ -10,7 +10,7 @@ import { TinymceComponent } from './tinymce.component';
   exports: [TinymceComponent],
 })
 export class NgxTinymceModule {
-  static forRoot(options: TinymceOptions): ModuleWithProviders {
+  static forRoot(options: TinymceOptions): ModuleWithProviders<NgxTinymceModule> {
     return {
       ngModule: NgxTinymceModule,
       providers: [{ provide: TinymceOptions, useValue: options }],
