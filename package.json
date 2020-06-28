@@ -64,7 +64,6 @@
     "typescript": "~3.9.5",
     "tslint-config-prettier": "^1.18.0",
     "prettier": "^2.0.5",
-    "prettier-stylelint": "^0.4.2",
     "codecov": "^3.5.0",
     "ng-packagr": "^10.0.0"
   }

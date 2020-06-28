@@ -24,7 +24,7 @@ export class OtherComponent {
     content_css: '//www.tiny.cloud/css/codepen.min.css',
   };
 
-  ready(instance: any) {
+  ready(instance: any): void {
     console.log('ready', instance);
   }
 }
