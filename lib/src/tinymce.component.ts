@@ -13,15 +13,16 @@ import {
   Output,
   EventEmitter,
   NgZone,
+  Inject,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { InputBoolean, InputNumber } from '@ng-util/util';
 import { NuLazyService } from '@ng-util/lazy';
 import { filter } from 'rxjs/operators';
 import { TinymceOptions } from './tinymce.options';
+import { DOCUMENT } from '@angular/common';
 
-declare const window: any;
-declare const tinymce: any;
+const isSSR = !(typeof document === 'object' && !!document);
 
 @Component({
   selector: 'tinymce',
@@ -89,14 +90,28 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
     return this._instance;
   }
 
-  constructor(private defConfig: TinymceOptions, private lazySrv: NuLazyService, private ngZone: NgZone, private cd: ChangeDetectorRef) {}
+  private _getWin(): any {
+    return this.doc.defaultView || window;
+  }
+
+  constructor(
+    private defConfig: TinymceOptions,
+    private lazySrv: NuLazyService,
+    private ngZone: NgZone,
+    @Inject(DOCUMENT) private doc: any,
+    private cd: ChangeDetectorRef,
+  ) {}
 
   private initDelay(): void {
+    if (isSSR) {
+      return;
+    }
     setTimeout(() => this.init(), Math.min(0, this.delay));
   }
 
   private init(): void {
-    if (!window.tinymce) {
+    const win = this._getWin();
+    if (!win.tinymce) {
       throw new Error('tinymce js文件加载失败');
     }
 
@@ -110,7 +125,7 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
       if (url.endsWith('/')) {
         url = url.substr(0, url.length - 1);
       }
-      tinymce.baseURL = url;
+      win.tinymce.baseURL = url;
     }
     const userOptions = { ...defConfig.config, ...config };
     const options = {
@@ -146,7 +161,7 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
       options.auto_focus = id;
     }
 
-    this.ngZone.runOutsideAngular(() => tinymce.init(options));
+    this.ngZone.runOutsideAngular(() => win.tinymce.init(options));
 
     this.load = false;
     this.cd.detectChanges();
@@ -171,8 +186,11 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
   }
 
   ngAfterViewInit(): void {
+    if (isSSR) {
+      return;
+    }
     // 已经存在对象无须进入懒加载模式
-    if (window.tinymce) {
+    if (this._getWin().tinymce) {
       this.initDelay();
       return;
     }
@@ -182,7 +200,7 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
     const fileName = defConfig && defConfig.fileName;
     const url = (baseURL || './assets/tinymce/') + (fileName || 'tinymce.min.js');
     this.lazySrv.change
-      .pipe(filter((ls) => ls.length === 1 && ls[0].path === url && ls[0].status === 'ok'))
+      .pipe(filter(ls => ls.length === 1 && ls[0].path === url && ls[0].status === 'ok'))
       .subscribe(() => this.initDelay());
     this.lazySrv.load(url);
   }
