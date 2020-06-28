@@ -85,60 +85,63 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
   @Input() @InputNumber() delay = 0;
   @Output() ready = new EventEmitter<any>();
 
-  get instance() {
+  get instance(): any {
     return this._instance;
   }
 
   constructor(private defConfig: TinymceOptions, private lazySrv: NuLazyService, private ngZone: NgZone, private cd: ChangeDetectorRef) {}
 
-  private initDelay() {
+  private initDelay(): void {
     setTimeout(() => this.init(), Math.min(0, this.delay));
   }
 
-  private init() {
+  private init(): void {
     if (!window.tinymce) {
       throw new Error('tinymce js文件加载失败');
     }
 
     const { defConfig, config, id, inline } = this;
-    if (this._instance) return;
+    if (this._instance) {
+      return;
+    }
 
     if (defConfig.baseURL) {
       let url = '' + defConfig.baseURL;
-      if (url.endsWith('/')) url = url.substr(0, url.length - 1);
+      if (url.endsWith('/')) {
+        url = url.substr(0, url.length - 1);
+      }
       tinymce.baseURL = url;
     }
-    const userOptions = Object.assign({}, defConfig.config, config);
-    const options = Object.assign(
-      {
-        selector: `#` + id,
-        inline,
+    const userOptions = { ...defConfig.config, ...config };
+    const options = {
+      selector: `#` + id,
+      inline,
+      ...defConfig.config,
+      ...config,
+
+      setup: (editor: any) => {
+        this._instance = editor;
+        if (this.onChange) {
+          editor.on('change keyup', () => {
+            this.value = editor.getContent();
+            this.ngZone.run(() => this.onChange(this.value));
+          });
+        }
+        if (typeof userOptions.setup === 'function') {
+          userOptions.setup(editor);
+        }
       },
-      defConfig.config,
-      config,
-      {
-        setup: (editor: any) => {
-          this._instance = editor;
-          if (this.onChange) {
-            editor.on('change keyup', () => {
-              this.value = editor.getContent();
-              this.ngZone.run(() => this.onChange(this.value));
-            });
-          }
-          if (typeof userOptions.setup === 'function') {
-            userOptions.setup(editor);
-          }
-        },
-        init_instance_callback: (editor: any) => {
-          if (editor && this.value) editor.setContent(this.value);
-          this.setDisabled();
-          if (typeof userOptions.init_instance_callback === 'function') {
-            userOptions.init_instance_callback(editor);
-          }
-          this.ready.emit(this._instance);
-        },
+      init_instance_callback: (editor: any) => {
+        if (editor && this.value) {
+          editor.setContent(this.value);
+        }
+        this.setDisabled();
+        if (typeof userOptions.init_instance_callback === 'function') {
+          userOptions.init_instance_callback(editor);
+        }
+        this.ready.emit(this._instance);
       },
-    );
+    };
     if (userOptions.auto_focus) {
       options.auto_focus = id;
     }
@@ -149,7 +152,7 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
     this.cd.detectChanges();
   }
 
-  private destroy() {
+  private destroy(): void {
     if (!this._instance) {
       return;
     }
@@ -160,8 +163,10 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
     this._instance = null;
   }
 
-  private setDisabled() {
-    if (!this._instance) return;
+  private setDisabled(): void {
+    if (!this._instance) {
+      return;
+    }
     this.ngZone.runOutsideAngular(() => this._instance.setMode(this._disabled ? 'readonly' : 'design'));
   }
 
