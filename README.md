@@ -1,4 +1,7 @@
-# ngx-tinymce [![NPM version](https://img.shields.io/npm/v/ngx-tinymce.svg)](https://www.npmjs.com/package/ngx-tinymce)
+# ngx-tinymce
+
+[![NPM version](https://img.shields.io/npm/v/ngx-tinymce.svg)](https://www.npmjs.com/package/ngx-tinymce)
+[![Ci](https://github.com/cipchk/ngx-tinymce/workflows/Ci/badge.svg)](https://github.com/cipchk/ngx-tinymce/actions)
 
 [Tinymce](https://www.tinymce.com/) Components build with [Angular](https://angular.io/).
 
