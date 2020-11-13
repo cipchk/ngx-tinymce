@@ -18,7 +18,6 @@ import {
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { InputBoolean, InputNumber } from '@ng-util/util';
 import { NuLazyService } from '@ng-util/lazy';
-import { filter } from 'rxjs/operators';
 import { TinymceOptions } from './tinymce.options';
 import { DOCUMENT } from '@angular/common';
 
@@ -28,10 +27,17 @@ const isSSR = !(typeof document === 'object' && !!document);
   selector: 'tinymce',
   exportAs: 'tinymce',
   template: `
-    <textarea *ngIf="!inline" [attr.id]="id" [attr.placeholder]="placeholder" class="tinymce-selector"></textarea>
+    <textarea
+      *ngIf="!inline"
+      [attr.id]="id"
+      [attr.placeholder]="placeholder"
+      class="tinymce-selector"
+    ></textarea>
     <div *ngIf="inline" [attr.id]="id"><ng-content></ng-content></div>
     <div class="loading" *ngIf="load">
-      <ng-container *ngIf="_loading; else _loadingTpl">{{ _loading }}</ng-container>
+      <ng-container *ngIf="_loading; else _loadingTpl">{{
+        _loading
+      }}</ng-container>
     </div>
   `,
   styles: [
@@ -52,7 +58,8 @@ const isSSR = !(typeof document === 'object' && !!document);
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, ControlValueAccessor {
+export class TinymceComponent
+  implements AfterViewInit, OnChanges, OnDestroy, ControlValueAccessor {
   private _instance: any;
   private value: string;
   load = true;
@@ -182,7 +189,9 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
     if (!this._instance) {
       return;
     }
-    this.ngZone.runOutsideAngular(() => this._instance.setMode(this._disabled ? 'readonly' : 'design'));
+    this.ngZone.runOutsideAngular(() =>
+      this._instance.setMode(this._disabled ? 'readonly' : 'design'),
+    );
   }
 
   ngAfterViewInit(): void {
@@ -198,10 +207,9 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
     const { defConfig } = this;
     const baseURL = defConfig && defConfig.baseURL;
     const fileName = defConfig && defConfig.fileName;
-    const url = (baseURL || './assets/tinymce/') + (fileName || 'tinymce.min.js');
-    this.lazySrv.change
-      .pipe(filter(ls => ls.length === 1 && ls[0].path === url && ls[0].status === 'ok'))
-      .subscribe(() => this.initDelay());
+    const url =
+      (baseURL || './assets/tinymce/') + (fileName || 'tinymce.min.js');
+    this.lazySrv.monitor(url).subscribe(() => this.initDelay());
     this.lazySrv.load(url);
   }
 
@@ -220,7 +228,9 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
     // value should be NOT NULL
     this.value = value || '';
     if (this._instance) {
-      this.ngZone.runOutsideAngular(() => this._instance.setContent(this.value));
+      this.ngZone.runOutsideAngular(() =>
+        this._instance.setContent(this.value),
+      );
     }
   }
 
