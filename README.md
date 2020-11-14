@@ -18,7 +18,7 @@ Install `ngx-tinymce` from `npm`
 npm install ngx-tinymce --save
 ```
 
-**Recommend:** You will need `tinymce.min.js` file via [Build Customizer](https://www.tinymce.com/download/custom-builds/) generate.
+**Recommend:** You will need `tinymce.min.js` file via [Build Customizer](https://www.tiny.cloud/get-tiny/custom-builds/) generate.
 
 Import the `ngx-tinymce` in to your root `AppModule`.
 
