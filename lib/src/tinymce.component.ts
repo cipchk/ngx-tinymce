@@ -27,17 +27,10 @@ const isSSR = !(typeof document === 'object' && !!document);
   selector: 'tinymce',
   exportAs: 'tinymce',
   template: `
-    <textarea
-      *ngIf="!inline"
-      [attr.id]="id"
-      [attr.placeholder]="placeholder"
-      class="tinymce-selector"
-    ></textarea>
+    <textarea *ngIf="!inline" [attr.id]="id" [attr.placeholder]="placeholder" class="tinymce-selector"></textarea>
     <div *ngIf="inline" [attr.id]="id"><ng-content></ng-content></div>
     <div class="loading" *ngIf="load">
-      <ng-container *ngIf="_loading; else _loadingTpl">{{
-        _loading
-      }}</ng-container>
+      <ng-container *ngIf="_loading; else _loadingTpl">{{ _loading }}</ng-container>
     </div>
   `,
   styles: [
@@ -58,28 +51,32 @@ const isSSR = !(typeof document === 'object' && !!document);
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TinymceComponent
-  implements AfterViewInit, OnChanges, OnDestroy, ControlValueAccessor {
+export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, ControlValueAccessor {
+  static ngAcceptInputType_inline: string | boolean | null | undefined;
+  static ngAcceptInputType_disabled: string | boolean | null | undefined;
+  static ngAcceptInputType_delay: string | number | null | undefined;
+
   private _instance: any;
-  private value: string;
+  private value = '';
   load = true;
   id = `_tinymce-${Math.random().toString(36).substring(2)}`;
 
-  private onChange: (value: string) => void;
-  private onTouched: () => void;
+  private onChange!: (value: string) => void;
+  private onTouched!: () => void;
 
   @Input() config: any;
-  @Input() placeholder: string;
+  @Input() placeholder = '';
   @Input() @InputBoolean() inline = false;
   @Input()
+  @InputBoolean()
   set disabled(value: boolean) {
     this._disabled = value;
     this.setDisabled();
   }
   private _disabled = false;
 
-  _loading: string;
-  _loadingTpl: TemplateRef<any>;
+  _loading: string | null = null;
+  _loadingTpl: TemplateRef<any> | null = null;
   @Input()
   set loading(value: string | TemplateRef<any>) {
     if (value instanceof TemplateRef) {
@@ -189,9 +186,7 @@ export class TinymceComponent
     if (!this._instance) {
       return;
     }
-    this.ngZone.runOutsideAngular(() =>
-      this._instance.setMode(this._disabled ? 'readonly' : 'design'),
-    );
+    this.ngZone.runOutsideAngular(() => this._instance.setMode(this._disabled ? 'readonly' : 'design'));
   }
 
   ngAfterViewInit(): void {
@@ -207,8 +202,7 @@ export class TinymceComponent
     const { defConfig } = this;
     const baseURL = defConfig && defConfig.baseURL;
     const fileName = defConfig && defConfig.fileName;
-    const url =
-      (baseURL || './assets/tinymce/') + (fileName || 'tinymce.min.js');
+    const url = (baseURL || './assets/tinymce/') + (fileName || 'tinymce.min.js');
     this.lazySrv.monitor(url).subscribe(() => this.initDelay());
     this.lazySrv.load(url);
   }
@@ -228,9 +222,7 @@ export class TinymceComponent
     // value should be NOT NULL
     this.value = value || '';
     if (this._instance) {
-      this.ngZone.runOutsideAngular(() =>
-        this._instance.setContent(this.value),
-      );
+      this.ngZone.runOutsideAngular(() => this._instance.setContent(this.value));
     }
   }
 
