@@ -30,7 +30,7 @@ import { NgxTinymceModule } from 'ngx-tinymce';
     NgxTinymceModule.forRoot({
       baseURL: './assets/tinymce/',
       // or cdn
-      baseURL: '//cdnjs.cloudflare.com/ajax/libs/tinymce/5.3.2/'
+      baseURL: '//cdnjs.cloudflare.com/ajax/libs/tinymce/5.7.1/'
     })
   ]
 })

@@ -29,10 +29,9 @@ import { InlineComponent } from './inline/inline.component';
       { useHash: true },
     ),
     NgxTinymceModule.forRoot({
-      baseURL: '//cdnjs.cloudflare.com/ajax/libs/tinymce/5.3.2/',
+      baseURL: '//cdnjs.cloudflare.com/ajax/libs/tinymce/5.7.1/',
     }),
   ],
-  providers: [],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
