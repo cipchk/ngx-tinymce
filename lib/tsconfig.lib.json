@@ -2,12 +2,16 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "alwaysStrict": true,
+    "sourceMap": true,
     "inlineSources": true,
+    "declaration": true,
     "strictFunctionTypes": true,
     "stripInternal": true
   },
   "files": ["./src/tinymce.module.ts"],
-  "include": ["**/*.ts"],
+  "include": [
+    "**/*.ts"
+  ],
   "angularCompilerOptions": {
     "enableIvy": true,
     "compilationMode": "partial"
