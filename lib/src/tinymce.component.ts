@@ -14,6 +14,7 @@ import {
   EventEmitter,
   NgZone,
   Inject,
+  SimpleChange,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { InputBoolean, InputNumber } from '@ng-util/util';
@@ -207,7 +208,7 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
     this.lazySrv.load(url);
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(changes: { [P in keyof this]?: SimpleChange } & SimpleChanges): void {
     if (this._instance && changes.config) {
       this.destroy();
       this.initDelay();
