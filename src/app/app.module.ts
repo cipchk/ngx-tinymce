@@ -11,6 +11,7 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { OtherComponent } from './other/other.component';
 import { InlineComponent } from './inline/inline.component';
+import { StandaloneDemoComponent } from './standalone.component';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, OtherComponent, InlineComponent],
@@ -25,6 +26,7 @@ import { InlineComponent } from './inline/inline.component';
         { path: '', component: HomeComponent },
         { path: 'other', component: OtherComponent },
         { path: 'inline', component: InlineComponent },
+        { path: 'standalone', component: StandaloneDemoComponent },
       ],
       { useHash: true },
     ),

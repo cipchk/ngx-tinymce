@@ -9,7 +9,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@master
 
-      - uses: borales/actions-yarn@v2.3.0
+      - uses: borales/actions-yarn@v3.0.0
         with:
           cmd: install
 
@@ -23,7 +23,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@master
 
-      - uses: borales/actions-yarn@v2.3.0
+      - uses: borales/actions-yarn@v3.0.0
         with:
           cmd: install
 
@@ -40,7 +40,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@master
 
-      - uses: borales/actions-yarn@v2.3.0
+      - uses: borales/actions-yarn@v3.0.0
         with:
           cmd: install
 
@@ -54,13 +54,13 @@ jobs:
       - name: checkout
         uses: actions/checkout@master
 
-      - uses: borales/actions-yarn@v2.3.0
+      - uses: borales/actions-yarn@v3.0.0
         with:
           cmd: install
 
       - name: build
         run: |
-          node --max_old_space_size=5120 ./node_modules/@angular/cli/bin/ng build --prod --base-href /ngx-tinymce/
+          node --max_old_space_size=5120 ./node_modules/@angular/cli/bin/ng build --base-href /ngx-tinymce/
           cp ./dist/index.html ./dist/404.html
           ls ./dist
 
