@@ -31,7 +31,8 @@ import { StandaloneDemoComponent } from './standalone.component';
       { useHash: true },
     ),
     NgxTinymceModule.forRoot({
-      baseURL: '//cdnjs.cloudflare.com/ajax/libs/tinymce/5.7.1/',
+      // baseURL: '//cdnjs.cloudflare.com/ajax/libs/tinymce/5.7.1/',
+      baseURL: '//cdn.tiny.cloud/1/no-api-key/tinymce/6/',
     }),
   ],
   bootstrap: [AppComponent],
