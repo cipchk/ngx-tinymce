@@ -128,7 +128,7 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
     if (defConfig.baseURL) {
       let url = '' + defConfig.baseURL;
       if (url.endsWith('/')) {
-        url = url.substr(0, url.length - 1);
+        url = url.substring(0, url.length - 1);
       }
       win.tinymce.baseURL = url;
     }
@@ -187,7 +187,15 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
     if (!this._instance) {
       return;
     }
-    this.ngZone.runOutsideAngular(() => this._instance.setMode(this._disabled ? 'readonly' : 'design'));
+    this.ngZone.runOutsideAngular(() => {
+      const mode = this._disabled ? 'readonly' : 'design';
+      // Compatible with 5
+      if (typeof this._instance.setMode === 'function') {
+        this._instance.setMode(mode);
+      } else {
+        this._instance.mode.set(mode);
+      }
+    });
   }
 
   ngAfterViewInit(): void {
