@@ -111,7 +111,7 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
     if (isSSR) {
       return;
     }
-    setTimeout(() => this.init(), Math.min(0, this.delay));
+    setTimeout(() => this.init(), Math.max(0, this.delay));
   }
 
   private init(): void {
