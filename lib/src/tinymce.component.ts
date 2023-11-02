@@ -15,15 +15,21 @@ import {
   NgZone,
   Inject,
   SimpleChange,
+  Optional,
+  booleanAttribute,
+  numberAttribute,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
-import { InputBoolean, InputNumber } from '@ng-util/util';
 import { NuLazyService } from '@ng-util/lazy';
+import { DOCUMENT, NgIf } from '@angular/common';
+import type { Editor as TinyMCEEditor, RawEditorOptions } from 'tinymce';
 import { TinymceOptions } from './tinymce.options';
-import { DOCUMENT } from '@angular/common';
 
 const isSSR = !(typeof document === 'object' && !!document);
 
+/**
+ * Angular for tinymce, You can modify the global configuration via `provideTinymce`
+ */
 @Component({
   selector: 'tinymce',
   exportAs: 'tinymce',
@@ -51,13 +57,11 @@ const isSSR = !(typeof document === 'object' && !!document);
   preserveWhitespaces: false,
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [NgIf],
 })
 export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, ControlValueAccessor {
-  static ngAcceptInputType_inline: string | boolean | null | undefined;
-  static ngAcceptInputType_disabled: string | boolean | null | undefined;
-  static ngAcceptInputType_delay: string | number | null | undefined;
-
-  private _instance: any;
+  private _instance?: TinyMCEEditor | null;
   private value = '';
   load = true;
   id = `_tinymce-${Math.random().toString(36).substring(2)}`;
@@ -65,11 +69,10 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
   private onChange!: (value: string) => void;
   private onTouched!: () => void;
 
-  @Input() config: any;
+  @Input() config?: RawEditorOptions | null;
   @Input() placeholder = '';
-  @Input() @InputBoolean() inline = false;
-  @Input()
-  @InputBoolean()
+  @Input({ transform: booleanAttribute }) inline = false;
+  @Input({ transform: booleanAttribute })
   set disabled(value: boolean) {
     this._disabled = value;
     this.setDisabled();
@@ -88,10 +91,10 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
     }
   }
   /** 延迟初始化 */
-  @Input() @InputNumber() delay = 0;
-  @Output() ready = new EventEmitter<any>();
+  @Input({ transform: numberAttribute }) delay = 0;
+  @Output() ready = new EventEmitter<TinyMCEEditor>();
 
-  get instance(): any {
+  get instance(): TinyMCEEditor | undefined | null {
     return this._instance;
   }
 
@@ -100,7 +103,7 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
   }
 
   constructor(
-    private defConfig: TinymceOptions,
+    @Optional() private defConfig: TinymceOptions,
     private lazySrv: NuLazyService,
     private ngZone: NgZone,
     @Inject(DOCUMENT) private doc: any,
@@ -125,21 +128,21 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
       return;
     }
 
-    if (defConfig.baseURL) {
+    if (defConfig?.baseURL) {
       let url = '' + defConfig.baseURL;
       if (url.endsWith('/')) {
         url = url.substring(0, url.length - 1);
       }
       win.tinymce.baseURL = url;
     }
-    const userOptions = { ...defConfig.config, ...config };
-    const options = {
+    const userOptions = { ...defConfig?.config, ...config };
+    const options: RawEditorOptions = {
       selector: `#` + id,
       inline,
-      ...defConfig.config,
+      ...defConfig?.config,
       ...config,
 
-      setup: (editor: any) => {
+      setup: (editor) => {
         this._instance = editor;
         if (this.onChange) {
           editor.on('change keyup', () => {
@@ -151,7 +154,7 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
           userOptions.setup(editor);
         }
       },
-      init_instance_callback: (editor: any) => {
+      init_instance_callback: (editor) => {
         if (editor && this.value) {
           editor.setContent(this.value);
         }
@@ -159,7 +162,7 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
         if (typeof userOptions.init_instance_callback === 'function') {
           userOptions.init_instance_callback(editor);
         }
-        this.ready.emit(this._instance);
+        this.ready.emit(editor);
       },
     };
     if (userOptions.auto_focus) {
@@ -173,12 +176,12 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
   }
 
   private destroy(): void {
-    if (!this._instance) {
+    if (this._instance == null) {
       return;
     }
     this.ngZone.runOutsideAngular(() => {
-      this._instance.off();
-      this._instance.remove('#' + this.id);
+      this._instance!.off();
+      this._instance!.remove();
     });
     this._instance = null;
   }
@@ -190,10 +193,11 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
     this.ngZone.runOutsideAngular(() => {
       const mode = this._disabled ? 'readonly' : 'design';
       // Compatible with 5
-      if (typeof this._instance.setMode === 'function') {
-        this._instance.setMode(mode);
+      const setMode5 = (this._instance as any).setMode;
+      if (typeof setMode5 === 'function') {
+        setMode5(mode);
       } else {
-        this._instance.mode.set(mode);
+        this._instance!.mode.set(mode);
       }
     });
   }
@@ -231,7 +235,7 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
     // value should be NOT NULL
     this.value = value || '';
     if (this._instance) {
-      this.ngZone.runOutsideAngular(() => this._instance.setContent(this.value));
+      this.ngZone.runOutsideAngular(() => this._instance!.setContent(this.value));
     }
   }
 

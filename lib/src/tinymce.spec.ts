@@ -2,35 +2,38 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NgxTinymceModule } from './tinymce.module';
+import { FormsModule } from '@angular/forms';
+import { RawEditorOptions } from 'tinymce';
 
-const html = ``;
+const delay = (ms?: number) => new Promise((res) => setTimeout(res, ms ?? 1000));
 
 describe('Component: ngx-tinymce', () => {
   let fixture: ComponentFixture<any>;
   let context: TestComponent;
-  let element: any;
-  let clean: any;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       declarations: [TestComponent],
-      imports: [NgxTinymceModule],
-    });
-    TestBed.overrideComponent(TestComponent, { set: { template: html } });
+      imports: [NgxTinymceModule, FormsModule],
+    }).compileComponents();
     fixture = TestBed.createComponent(TestComponent);
     context = fixture.componentInstance;
-    element = fixture.nativeElement.querySelector('#c1');
-    clean = fixture.nativeElement.querySelector('#c2');
-    fixture.detectChanges();
   });
 
-  it('fixture should not be null', () => {
-    expect(fixture).not.toBeNull();
+  it('fixture should not be null', async () => {
+    context.config = { setup: jasmine.createSpy() };
+    fixture.detectChanges();
+    await delay();
+    expect(context.config.setup).toHaveBeenCalled();
   });
 });
 
 @Component({
   selector: 'app-tinymce-test',
-  template: '',
+  template: '<tinymce [(ngModel)]="value" [config]="config" (ready)="onReady()" />',
 })
-class TestComponent {}
+class TestComponent {
+  value = `<h1>a</h1>`;
+  config?: RawEditorOptions | null;
+  onReady(): void {}
+}

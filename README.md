@@ -28,6 +28,7 @@ import { NgxTinymceModule } from 'ngx-tinymce';
 @NgModule({
   imports: [
     NgxTinymceModule.forRoot({
+      // Local assets
       baseURL: './assets/tinymce/',
       // or cdn
       baseURL: '//cdnjs.cloudflare.com/ajax/libs/tinymce/5.7.1/'
@@ -35,6 +36,37 @@ import { NgxTinymceModule } from 'ngx-tinymce';
   ]
 })
 export class AppModule { }
+```
+
+If the local path should be adding assets configuration in `angular.json`:
+
+```json
+"assets": [
+  {
+    "glob": "**/tinymce.min.js",
+    "input": "./node_modules/tinymce",
+    "output": "assets/tinymce/"
+  }
+]
+```
+
+### Standalone
+
+```ts
+@Component({
+  template: `<tinymce />`,
+  standalone: true,
+  imports: [TinymceComponent],
+})
+export class App
+```
+
+Globa config:
+
+```ts
+bootstrapApplication(AppComponent, {
+  providers: [provideTinymce({baseURL: '//cdn.tiny.cloud/1/no-api-key/tinymce/6/'})]
+});
 ```
 
 ### Usage

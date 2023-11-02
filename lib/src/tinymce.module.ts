@@ -5,8 +5,7 @@ import { TinymceOptions } from './tinymce.options';
 import { TinymceComponent } from './tinymce.component';
 
 @NgModule({
-  imports: [CommonModule],
-  declarations: [TinymceComponent],
+  imports: [CommonModule, TinymceComponent],
   exports: [TinymceComponent],
 })
 export class NgxTinymceModule {

@@ -20,7 +20,6 @@
   },
   "homepage": "https://cipchk.github.io/ngx-tinymce/",
   "dependencies": {
-    "@ng-util/lazy": "^14.0.0",
-    "@ng-util/util": "^14.0.0"
+    "@ng-util/lazy": "^17.0.0-rc.0"
   }
 }

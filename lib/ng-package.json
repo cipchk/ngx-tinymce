@@ -5,5 +5,5 @@
   "lib": {
     "entryFile": "src/public_api.ts"
   },
-  "allowedNonPeerDependencies": ["@ng-util/util", "@ng-util/lazy"]
+  "allowedNonPeerDependencies": ["@ng-util/lazy"]
 }
