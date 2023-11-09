@@ -1,4 +1,5 @@
 import { Component, ViewEncapsulation } from '@angular/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -27,9 +28,6 @@ import { Component, ViewEncapsulation } from '@angular/core';
           <li class="nav-item">
             <a class="nav-link" routerLink="/inline">Inline</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/standalone">Standalone</a>
-          </li>
         </ul>
       </div>
     </nav>
@@ -37,5 +35,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
     <div style="margin-top: 16px;"><router-outlet></router-outlet></div>
   `,
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [RouterOutlet, RouterLink],
 })
 export class AppComponent {}

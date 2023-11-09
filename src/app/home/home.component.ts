@@ -1,9 +1,14 @@
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
+import { HighlightJsDirective } from 'ngx-highlight-js';
+import { TinymceComponent } from 'lib';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
+  standalone: true,
+  imports: [FormsModule, HighlightJsDirective, TinymceComponent],
 })
 export class HomeComponent {
   html = `

@@ -1,9 +1,14 @@
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { HighlightJsDirective } from 'ngx-highlight-js';
+import { TinymceComponent } from 'lib';
 
 @Component({
   selector: 'app-other',
   templateUrl: './other.component.html',
   styleUrls: ['./other.component.less'],
+  standalone: true,
+  imports: [FormsModule, HighlightJsDirective, TinymceComponent],
 })
 export class OtherComponent {
   html = `now: ${+new Date()}`;

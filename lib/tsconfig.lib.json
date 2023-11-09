@@ -6,14 +6,13 @@
     "inlineSources": true,
     "declaration": true,
     "strictFunctionTypes": true,
-    "stripInternal": true
+    "stripInternal": true,
+    "declarationMap": false
   },
-  "files": ["./src/tinymce.module.ts"],
   "include": [
     "**/*.ts"
   ],
   "angularCompilerOptions": {
-    "enableIvy": true,
     "compilationMode": "partial"
   }
 }
