@@ -3,7 +3,7 @@ import { AppComponent } from './app/app.component';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter, withHashLocation } from '@angular/router';
 import { ROUTERS } from './app/router';
-import { provideTinymce } from 'ngx-tinymce';
+import { provideTinymce } from 'lib';
 
 bootstrapApplication(AppComponent, {
   providers: [

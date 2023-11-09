@@ -3,7 +3,7 @@
   "dest": "../publish",
   "deleteDestPath": true,
   "lib": {
-    "entryFile": "src/public_api.ts"
+    "entryFile": "public-api.ts"
   },
   "allowedNonPeerDependencies": ["@ng-util/lazy"]
 }

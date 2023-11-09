@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HighlightJsDirective } from 'ngx-highlight-js';
-import { TinymceComponent } from 'ngx-tinymce';
+import { TinymceComponent } from 'lib';
 
 @Component({
   selector: 'app-other',

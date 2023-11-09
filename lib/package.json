@@ -1,6 +1,6 @@
 {
   "name": "ngx-tinymce",
-  "version": "17.0.0-rc.0",
+  "version": "17.0.0",
   "description": "Angular for tinymce",
   "keywords": [
     "angular-tinymce",
@@ -20,6 +20,6 @@
   },
   "homepage": "https://cipchk.github.io/ngx-tinymce/",
   "dependencies": {
-    "@ng-util/lazy": "^17.0.0-rc.0"
+    "@ng-util/lazy": "^17.0.0"
   }
 }
