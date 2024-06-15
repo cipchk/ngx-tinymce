@@ -9,6 +9,6 @@ bootstrapApplication(AppComponent, {
   providers: [
     provideHttpClient(),
     provideRouter(ROUTERS, withHashLocation()),
-    provideTinymce({ baseURL: '//cdn.tiny.cloud/1/no-api-key/tinymce/6/' }),
+    provideTinymce({ baseURL: '//cdn.tiny.cloud/1/no-api-key/tinymce/7/' }),
   ],
 }).catch((err) => console.error(err));
