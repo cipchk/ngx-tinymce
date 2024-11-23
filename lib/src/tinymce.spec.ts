@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NgxTinymceModule } from './tinymce.module';
 import { FormsModule } from '@angular/forms';
 import { RawEditorOptions } from 'tinymce';
+import { TinymceComponent } from './tinymce.component';
 
 const delay = (ms?: number) => new Promise((res) => setTimeout(res, ms ?? 1000));
 
@@ -13,8 +13,7 @@ describe('Component: ngx-tinymce', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TestComponent],
-      imports: [NgxTinymceModule, FormsModule],
+      imports: [TestComponent],
     }).compileComponents();
     fixture = TestBed.createComponent(TestComponent);
     context = fixture.componentInstance;
@@ -31,6 +30,7 @@ describe('Component: ngx-tinymce', () => {
 @Component({
   selector: 'app-tinymce-test',
   template: '<tinymce [(ngModel)]="value" [config]="config" (ready)="onReady()" />',
+  imports: [FormsModule, TinymceComponent],
 })
 class TestComponent {
   value = `<h1>a</h1>`;

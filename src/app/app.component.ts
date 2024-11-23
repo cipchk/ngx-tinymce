@@ -35,7 +35,6 @@ import { RouterLink, RouterOutlet } from '@angular/router';
     <div style="margin-top: 16px;"><router-outlet></router-outlet></div>
   `,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [RouterOutlet, RouterLink],
 })
 export class AppComponent {}

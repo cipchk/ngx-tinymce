@@ -7,7 +7,6 @@ import { TinymceComponent } from 'lib';
 @Component({
   selector: 'app-inline',
   templateUrl: './inline.component.html',
-  standalone: true,
   imports: [FormsModule, HighlightJsDirective, TinymceComponent],
 })
 export class InlineComponent {

@@ -13,15 +13,14 @@ import {
   Output,
   EventEmitter,
   NgZone,
-  Inject,
   SimpleChange,
-  Optional,
   booleanAttribute,
   numberAttribute,
+  inject,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { NuLazyService } from '@ng-util/lazy';
-import { DOCUMENT, NgIf } from '@angular/common';
+import { DOCUMENT, NgTemplateOutlet } from '@angular/common';
 import type { Editor as TinyMCEEditor, RawEditorOptions } from 'tinymce';
 import { TinymceOptions } from './tinymce.options';
 
@@ -34,12 +33,21 @@ const isSSR = !(typeof document === 'object' && !!document);
   selector: 'tinymce',
   exportAs: 'tinymce',
   template: `
-    <textarea *ngIf="!inline" [attr.id]="id" [attr.placeholder]="placeholder" class="tinymce-selector"></textarea>
-    <div *ngIf="inline" [attr.id]="id"><ng-content></ng-content></div>
-    <div class="loading" *ngIf="load">
-      <ng-container *ngIf="_loading; else _loadingTpl">{{ _loading }}</ng-container>
+    @if (inline) {
+    <div [attr.id]="id"><ng-content /></div>
+    } @else {
+    <textarea [attr.id]="id" [attr.placeholder]="placeholder" class="tinymce-selector"></textarea>
+    } @if (load) {
+    <div class="loading">
+      @if (_loading) {
+      {{ _loading }}
+      } @else {
+      <ng-template [ngTemplateOutlet]="_loadingTpl" />
+      }
     </div>
+    }
   `,
+  imports: [NgTemplateOutlet],
   styles: [
     `
       tinymce .tinymce-selector {
@@ -57,10 +65,14 @@ const isSSR = !(typeof document === 'object' && !!document);
   preserveWhitespaces: false,
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [NgIf],
 })
 export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, ControlValueAccessor {
+  private defConfig = inject(TinymceOptions, { optional: true });
+  private lazySrv = inject(NuLazyService);
+  private ngZone = inject(NgZone);
+  private doc = inject(DOCUMENT);
+  private cd = inject(ChangeDetectorRef);
+
   private _instance?: TinyMCEEditor | null;
   private value = '';
   load = true;
@@ -92,7 +104,7 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
   }
   /** 延迟初始化 */
   @Input({ transform: numberAttribute }) delay = 0;
-  @Output() ready = new EventEmitter<TinyMCEEditor>();
+  @Output() readonly ready = new EventEmitter<TinyMCEEditor>();
 
   get instance(): TinyMCEEditor | undefined | null {
     return this._instance;
@@ -101,14 +113,6 @@ export class TinymceComponent implements AfterViewInit, OnChanges, OnDestroy, Co
   private _getWin(): any {
     return this.doc.defaultView || window;
   }
-
-  constructor(
-    @Optional() private defConfig: TinymceOptions,
-    private lazySrv: NuLazyService,
-    private ngZone: NgZone,
-    @Inject(DOCUMENT) private doc: any,
-    private cd: ChangeDetectorRef,
-  ) {}
 
   private initDelay(): void {
     if (isSSR) {
