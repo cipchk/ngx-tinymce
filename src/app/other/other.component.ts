@@ -7,7 +7,6 @@ import { TinymceComponent } from 'lib';
   selector: 'app-other',
   templateUrl: './other.component.html',
   styleUrls: ['./other.component.less'],
-  standalone: true,
   imports: [FormsModule, HighlightJsDirective, TinymceComponent],
 })
 export class OtherComponent {

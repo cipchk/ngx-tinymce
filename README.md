@@ -31,11 +31,11 @@ import { NgxTinymceModule } from 'ngx-tinymce';
       // Local assets
       baseURL: './assets/tinymce/',
       // or cdn
-      baseURL: '//cdnjs.cloudflare.com/ajax/libs/tinymce/5.7.1/'
-    })
-  ]
+      baseURL: '//cdnjs.cloudflare.com/ajax/libs/tinymce/5.7.1/',
+    }),
+  ],
 })
-export class AppModule { }
+export class AppModule {}
 ```
 
 If the local path should be adding assets configuration in `angular.json`:
@@ -55,7 +55,6 @@ If the local path should be adding assets configuration in `angular.json`:
 ```ts
 @Component({
   template: `<tinymce />`,
-  standalone: true,
   imports: [TinymceComponent],
 })
 export class App
@@ -65,7 +64,7 @@ Globa config:
 
 ```ts
 bootstrapApplication(AppComponent, {
-  providers: [provideTinymce({baseURL: '//cdn.tiny.cloud/1/no-api-key/tinymce/6/'})]
+  providers: [provideTinymce({ baseURL: '//cdn.tiny.cloud/1/no-api-key/tinymce/6/' })],
 });
 ```
 
@@ -76,29 +75,29 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'my-app',
-  template: `<tinymce [(ngModel)]="html"></tinymce>`
+  template: `<tinymce [(ngModel)]="html"></tinymce>`,
 })
-export class AppComponent  {
+export class AppComponent {
   html = ``;
 }
 ```
 
 ### How to use it with:
 
-+ `angular-cli` please refer to **Installation instructions**.
-+ `stackblitz` sample available [here](https://stackblitz.com/edit/ngx-tinymce?file=app%2Fapp.component.ts).
+- `angular-cli` please refer to **Installation instructions**.
+- `stackblitz` sample available [here](https://stackblitz.com/edit/ngx-tinymce?file=app%2Fapp.component.ts).
 
 ## API
 
-| Name | Type | Default | Summary |
-|------|------|---------|---------|
-| config | `any` |  | see [configure](https://www.tinymce.com/docs/configure/integration-and-setup/) |
-| loading | `string,TemplateRef` | - | Loading status of tinymce |
-| disabled | `boolean` | `false` | Set tinymce mode is `readonly` if `true` |
-| inline | `boolean` | `false` | Inline editor |
-| delay | `number` | 0 | Delayed rendering, unit is 'millisecond' |
-| placeholder | `string` | - | Placeholder for tinymce, **NOTE:** dependent on [tinymce-placeholder](https://github.com/mohan/tinymce-placeholder) |
-| ready | `EventEmitter<any>` | - | Tinymce ready callback |
+| Name        | Type                 | Default | Summary                                                                                                             |
+| ----------- | -------------------- | ------- | ------------------------------------------------------------------------------------------------------------------- |
+| config      | `any`                |         | see [configure](https://www.tinymce.com/docs/configure/integration-and-setup/)                                      |
+| loading     | `string,TemplateRef` | -       | Loading status of tinymce                                                                                           |
+| disabled    | `boolean`            | `false` | Set tinymce mode is `readonly` if `true`                                                                            |
+| inline      | `boolean`            | `false` | Inline editor                                                                                                       |
+| delay       | `number`             | 0       | Delayed rendering, unit is 'millisecond'                                                                            |
+| placeholder | `string`             | -       | Placeholder for tinymce, **NOTE:** dependent on [tinymce-placeholder](https://github.com/mohan/tinymce-placeholder) |
+| ready       | `EventEmitter<any>`  | -       | Tinymce ready callback                                                                                              |
 
 ## Troubleshooting
 
