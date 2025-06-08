@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { HighlightJsDirective } from 'ngx-highlight-js';
@@ -10,6 +10,7 @@ import { TinymceComponent } from 'lib';
   imports: [FormsModule, HighlightJsDirective, TinymceComponent],
 })
 export class InlineComponent {
+  readonly san = inject(DomSanitizer);
   html = `
 <div class="demo-inline">
   <div class="container">
@@ -46,8 +47,6 @@ export class InlineComponent {
     </p>
   </div>
 </div>`;
-
-  constructor(public san: DomSanitizer) {}
 
   ready(instance: any) {
     console.log('ready', instance);
