@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { HighlightJsDirective } from 'ngx-highlight-js';
@@ -10,6 +10,8 @@ import { TinymceComponent } from 'lib';
   imports: [FormsModule, HighlightJsDirective, TinymceComponent],
 })
 export class HomeComponent {
+  readonly san = inject(DomSanitizer);
+
   html = `
   <p style="text-align: center; font-size: 15px;"><img title="TinyMCE Logo" src="//www.tinymce.com/images/glyph-tinymce@2x.png" alt="TinyMCE Logo" width="110" height="97" />
   </p>
@@ -58,6 +60,4 @@ export class HomeComponent {
   config = {
     height: 350,
   };
-
-  constructor(public san: DomSanitizer) {}
 }

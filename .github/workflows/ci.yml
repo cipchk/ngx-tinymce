@@ -30,7 +30,7 @@ jobs:
       - name: run
         run: yarn run test
 
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
         name: upload
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -66,11 +66,11 @@ jobs:
       - name: build
         run: |
           node ./node_modules/@angular/cli/bin/ng build --base-href /ngx-tinymce/
-          cp ./dist/browser/index.html ./dist/browser/404.html
-          ls ./dist/browser
+          cp ./dist/ngx-tinymce/browser/index.html ./dist/ngx-tinymce/browser/404.html
+          ls ./dist/ngx-tinymce/browser
 
       - name: deploy-to-gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist/browser
+          publish_dir: ./dist/ngx-tinymce/browser
