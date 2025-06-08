@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ngx-filesaver": {
+    "ngx-tinymce": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
