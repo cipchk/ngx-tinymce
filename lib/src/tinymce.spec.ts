@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, provideZonelessChangeDetection, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormsModule } from '@angular/forms';
 import { RawEditorOptions } from 'tinymce';
-import { TinymceComponent } from './tinymce.component';
+import { TinymceComponent } from './tinymce';
 
 const delay = (ms?: number) => new Promise((res) => setTimeout(res, ms ?? 1000));
 
@@ -13,6 +13,7 @@ describe('Component: ngx-tinymce', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
+      providers: [provideZonelessChangeDetection()],
       imports: [TestComponent],
     });
     fixture = TestBed.createComponent(TestComponent);
@@ -20,20 +21,22 @@ describe('Component: ngx-tinymce', () => {
   });
 
   it('fixture should not be null', async () => {
-    context.config = { setup: jasmine.createSpy() };
+    context.config.set({
+      setup: vi.fn(),
+    });
     fixture.detectChanges();
     await delay(1);
-    expect(context.config.setup).toHaveBeenCalled();
+    expect(context.config()?.setup).toHaveBeenCalled();
   });
 });
 
 @Component({
   selector: 'app-tinymce-test',
-  template: '<tinymce [(ngModel)]="value" [config]="config" (ready)="onReady()" />',
+  template: '<tinymce [(ngModel)]="value" [config]="config()" (ready)="onReady()" />',
   imports: [FormsModule, TinymceComponent],
 })
 class TestComponent {
-  value = `<h1>a</h1>`;
-  config?: RawEditorOptions | null;
+  value = signal(`<h1>a</h1>`);
+  config = signal<RawEditorOptions | null>(null);
   onReady(): void { }
 }

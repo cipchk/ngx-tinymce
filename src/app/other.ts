@@ -1,18 +1,25 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HighlightJsDirective } from 'ngx-highlight-js';
-import { TinymceComponent } from 'lib';
+import { TinymceComponent } from 'ngx-tinymce';
 
 @Component({
   selector: 'app-other',
-  templateUrl: './other.component.html',
-  styleUrls: ['./other.component.less'],
+  template: `
+    <div class="card mb-3">
+      <div class="card-header">Loading</div>
+      <div class="card-body">
+        <textarea highlight-js>&lt;tinymce [config]="config" [(ngModel)]="html"></tinymce></textarea>
+        <tinymce [(ngModel)]="html" [config]="config" loading="加载中……" (ready)="ready($event)"></tinymce>
+      </div>
+    </div>
+  `,
   imports: [FormsModule, HighlightJsDirective, TinymceComponent],
 })
-export class OtherComponent {
-  html = `now: ${+new Date()}`;
+export class Other {
+  protected html = `now: ${+new Date()}`;
 
-  config = {
+  protected config = {
     height: 500,
     menubar: false,
     plugins: [
@@ -28,7 +35,7 @@ export class OtherComponent {
     content_css: '//www.tiny.cloud/css/codepen.min.css',
   };
 
-  ready(instance: any): void {
+  protected ready(instance: any): void {
     console.log('ready', instance);
   }
 }

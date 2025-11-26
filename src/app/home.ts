@@ -2,17 +2,37 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { HighlightJsDirective } from 'ngx-highlight-js';
-import { TinymceComponent } from 'lib';
+import { TinymceComponent } from 'ngx-tinymce';
 
 @Component({
   selector: 'app-home',
-  templateUrl: './home.component.html',
+  template: `
+    <div class="card mb-3">
+      <div class="card-header">Basic</div>
+      <div class="card-body">
+        <textarea highlight-js>&lt;tinymce [config]="config" [(ngModel)]="html"></tinymce></textarea>
+        <tinymce [(ngModel)]="html" [config]="config"></tinymce>
+        Result:
+        <div class="card card-outline-secondary mt-3">
+          <div class="card-body">
+            <blockquote class="card-bodyquote" [innerHTML]="san.bypassSecurityTrustHtml(html)"></blockquote>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card mb-3">
+      <div class="card-header">Disabled</div>
+      <div class="card-body">
+        <tinymce [(ngModel)]="html" disabled></tinymce>
+      </div>
+    </div>
+  `,
   imports: [FormsModule, HighlightJsDirective, TinymceComponent],
 })
-export class HomeComponent {
-  readonly san = inject(DomSanitizer);
+export class Home {
+  protected readonly san = inject(DomSanitizer);
 
-  html = `
+  protected html = `
   <p style="text-align: center; font-size: 15px;"><img title="TinyMCE Logo" src="//www.tinymce.com/images/glyph-tinymce@2x.png" alt="TinyMCE Logo" width="110" height="97" />
   </p>
   <h1 style="text-align: center;">Welcome to the TinyMCE Cloud demo!</h1>
@@ -57,7 +77,7 @@ export class HomeComponent {
   <p>Thanks for supporting TinyMCE! We hope it helps you and your users create great content.<br>All the best from the TinyMCE team.</p>
     `;
 
-  config = {
+  protected config = {
     height: 350,
   };
 }

@@ -2,16 +2,30 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { HighlightJsDirective } from 'ngx-highlight-js';
-import { TinymceComponent } from 'lib';
+import { TinymceComponent } from 'ngx-tinymce';
 
 @Component({
   selector: 'app-inline',
-  templateUrl: './inline.component.html',
+  template: `
+    <div class="card mb-3">
+      <div class="card-header">Inline mode</div>
+      <div class="card-body">
+        <textarea highlight-js>&lt;tinymce [config]="config" [(ngModel)]="html" inline></tinymce></textarea>
+        <tinymce [(ngModel)]="html" inline></tinymce>
+        Result:
+        <div class="card card-outline-secondary mt-3">
+          <div class="card-body">
+            <blockquote class="card-bodyquote" [innerHTML]="san.bypassSecurityTrustHtml(html)"></blockquote>
+          </div>
+        </div>
+      </div>
+    </div>
+  `,
   imports: [FormsModule, HighlightJsDirective, TinymceComponent],
 })
-export class InlineComponent {
-  readonly san = inject(DomSanitizer);
-  html = `
+export class Inline {
+  protected readonly san = inject(DomSanitizer);
+  protected html = `
 <div class="demo-inline">
   <div class="container">
     <p><img src="https://www.tiny.cloud/images/email-banner-2.png" /></p>
@@ -48,7 +62,7 @@ export class InlineComponent {
   </div>
 </div>`;
 
-  ready(instance: any) {
+  protected ready(instance: any) {
     console.log('ready', instance);
   }
 }
