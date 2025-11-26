@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
@@ -34,7 +34,6 @@ import { RouterLink, RouterOutlet } from '@angular/router';
     <p style="line-height: 30px;">Angular for tinymce</p>
     <div style="margin-top: 16px;"><router-outlet></router-outlet></div>
   `,
-  encapsulation: ViewEncapsulation.None,
   imports: [RouterOutlet, RouterLink],
 })
-export class AppComponent {}
+export class App { }
