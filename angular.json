@@ -32,9 +32,10 @@
           "options": {
             "tsConfig": "lib/tsconfig.spec.json",
             "setupFiles": [
-              "test/setup.ts",
+              "lib/test-setup.ts",
               "node_modules/tinymce/tinymce.min.js"
-            ]
+            ],
+            "isolate": true
           }
         },
         "lint": {
@@ -46,7 +47,7 @@
               "src/**/*.ts",
               "src/**/*.html"
             ],
-            "eslintConfig": "eslint.config.js"
+            "eslintConfig": "eslint.config.mjs"
           }
         }
       }

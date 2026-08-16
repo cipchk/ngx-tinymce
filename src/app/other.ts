@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+
 import { HighlightJsDirective } from 'ngx-highlight-js';
 import { TinymceComponent } from 'ngx-tinymce';
 
@@ -10,11 +11,11 @@ import { TinymceComponent } from 'ngx-tinymce';
       <div class="card-header">Loading</div>
       <div class="card-body">
         <textarea highlight-js>&lt;tinymce [config]="config" [(ngModel)]="html"></tinymce></textarea>
-        <tinymce [(ngModel)]="html" [config]="config" loading="加载中……" (ready)="ready($event)"></tinymce>
+        <tinymce [(ngModel)]="html" [config]="config" loading="加载中……" (ready)="ready($event)" />
       </div>
     </div>
   `,
-  imports: [FormsModule, HighlightJsDirective, TinymceComponent],
+  imports: [FormsModule, HighlightJsDirective, TinymceComponent]
 })
 export class Other {
   protected html = `now: ${+new Date()}`;
@@ -25,14 +26,14 @@ export class Other {
     plugins: [
       'advlist autolink lists link image charmap print preview anchor',
       'searchreplace visualblocks code fullscreen',
-      'insertdatetime media table paste code help wordcount',
+      'insertdatetime media table paste code help wordcount'
     ],
     toolbar:
       'undo redo | formatselect | ' +
       'bold italic backcolor | alignleft aligncenter ' +
       'alignright alignjustify | bullist numlist outdent indent | ' +
       'removeformat | help',
-    content_css: '//www.tiny.cloud/css/codepen.min.css',
+    content_css: '//www.tiny.cloud/css/codepen.min.css'
   };
 
   protected ready(instance: any): void {

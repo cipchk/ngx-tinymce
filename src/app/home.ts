@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
+
 import { HighlightJsDirective } from 'ngx-highlight-js';
 import { TinymceComponent } from 'ngx-tinymce';
 
@@ -11,7 +12,7 @@ import { TinymceComponent } from 'ngx-tinymce';
       <div class="card-header">Basic</div>
       <div class="card-body">
         <textarea highlight-js>&lt;tinymce [config]="config" [(ngModel)]="html"></tinymce></textarea>
-        <tinymce [(ngModel)]="html" [config]="config"></tinymce>
+        <tinymce [(ngModel)]="html" [config]="config" />
         Result:
         <div class="card card-outline-secondary mt-3">
           <div class="card-body">
@@ -23,11 +24,11 @@ import { TinymceComponent } from 'ngx-tinymce';
     <div class="card mb-3">
       <div class="card-header">Disabled</div>
       <div class="card-body">
-        <tinymce [(ngModel)]="html" disabled></tinymce>
+        <tinymce [(ngModel)]="html" disabled />
       </div>
     </div>
   `,
-  imports: [FormsModule, HighlightJsDirective, TinymceComponent],
+  imports: [FormsModule, HighlightJsDirective, TinymceComponent]
 })
 export class Home {
   protected readonly san = inject(DomSanitizer);
@@ -78,6 +79,6 @@ export class Home {
     `;
 
   protected config = {
-    height: 350,
+    height: 350
   };
 }

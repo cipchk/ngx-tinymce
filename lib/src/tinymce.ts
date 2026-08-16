@@ -1,3 +1,4 @@
+import { DOCUMENT, NgTemplateOutlet } from '@angular/common';
 import {
   Component,
   forwardRef,
@@ -12,12 +13,14 @@ import {
   input,
   output,
   afterNextRender,
-  effect,
+  effect
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
-import { NuLazyService } from '@ng-util/lazy';
-import { DOCUMENT, NgTemplateOutlet } from '@angular/common';
+
 import type { Editor as TinyMCEEditor, RawEditorOptions } from 'tinymce';
+
+import { NuLazyService } from '@ng-util/lazy';
+
 import { TinymceOptions } from './options';
 
 const isSSR = !(typeof document === 'object' && !!document);
@@ -33,7 +36,8 @@ const isSSR = !(typeof document === 'object' && !!document);
       <div [attr.id]="id"><ng-content /></div>
     } @else {
       <textarea [attr.id]="id" [attr.placeholder]="placeholder()" class="tinymce-selector"></textarea>
-    } @if (load()) {
+    }
+    @if (load()) {
       <div class="loading">
         @if (_loading()) {
           {{ _loading() }}
@@ -49,18 +53,18 @@ const isSSR = !(typeof document === 'object' && !!document);
       tinymce .tinymce-selector {
         display: none;
       }
-    `,
+    `
   ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => TinymceComponent),
-      multi: true,
-    },
+      multi: true
+    }
   ],
   preserveWhitespaces: false,
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TinymceComponent implements OnDestroy, ControlValueAccessor {
   private readonly defConfig = inject(TinymceOptions, { optional: true });
@@ -92,7 +96,7 @@ export class TinymceComponent implements OnDestroy, ControlValueAccessor {
         this._loading.set(value);
       }
       return value;
-    },
+    }
   });
   /** 延迟初始化 */
   readonly delay = input(0, { transform: numberAttribute });
@@ -125,9 +129,8 @@ export class TinymceComponent implements OnDestroy, ControlValueAccessor {
       const cfg = this.config();
       if (!this._instance) return;
       this.destroy();
-      if (cfg)
-        this.initDelay();
-    })
+      if (cfg) this.initDelay();
+    });
   }
 
   private get win(): any {
@@ -153,7 +156,7 @@ export class TinymceComponent implements OnDestroy, ControlValueAccessor {
     }
 
     if (defConfig?.baseURL) {
-      let url = '' + defConfig.baseURL;
+      let url = `${defConfig.baseURL}`;
       if (url.endsWith('/')) {
         url = url.substring(0, url.length - 1);
       }
@@ -161,12 +164,12 @@ export class TinymceComponent implements OnDestroy, ControlValueAccessor {
     }
     const userOptions = { ...defConfig?.config, ...config() };
     const options: RawEditorOptions = {
-      selector: `#` + id,
+      selector: `#${id}`,
       inline: inline(),
       ...defConfig?.config,
       ...config(),
 
-      setup: (editor) => {
+      setup: editor => {
         this._instance = editor;
         if (this.onChange) {
           editor.on('change keyup', () => {
@@ -178,7 +181,7 @@ export class TinymceComponent implements OnDestroy, ControlValueAccessor {
           userOptions.setup(editor);
         }
       },
-      init_instance_callback: (editor) => {
+      init_instance_callback: editor => {
         if (editor && this.value) {
           editor.setContent(this.value);
         }
@@ -187,7 +190,7 @@ export class TinymceComponent implements OnDestroy, ControlValueAccessor {
           userOptions.init_instance_callback(editor);
         }
         this.ready.emit(editor);
-      },
+      }
     };
     if (userOptions.auto_focus) {
       options.auto_focus = id;

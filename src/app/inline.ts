@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
+
 import { HighlightJsDirective } from 'ngx-highlight-js';
 import { TinymceComponent } from 'ngx-tinymce';
 
@@ -11,7 +12,7 @@ import { TinymceComponent } from 'ngx-tinymce';
       <div class="card-header">Inline mode</div>
       <div class="card-body">
         <textarea highlight-js>&lt;tinymce [config]="config" [(ngModel)]="html" inline></tinymce></textarea>
-        <tinymce [(ngModel)]="html" inline></tinymce>
+        <tinymce [(ngModel)]="html" inline />
         Result:
         <div class="card card-outline-secondary mt-3">
           <div class="card-body">
@@ -21,7 +22,7 @@ import { TinymceComponent } from 'ngx-tinymce';
       </div>
     </div>
   `,
-  imports: [FormsModule, HighlightJsDirective, TinymceComponent],
+  imports: [FormsModule, HighlightJsDirective, TinymceComponent]
 })
 export class Inline {
   protected readonly san = inject(DomSanitizer);
@@ -62,7 +63,7 @@ export class Inline {
   </div>
 </div>`;
 
-  protected ready(instance: any) {
+  protected ready(instance: any): void {
     console.log('ready', instance);
   }
 }

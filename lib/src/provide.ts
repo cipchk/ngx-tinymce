@@ -1,4 +1,5 @@
 import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
+
 import { TinymceOptions } from './options';
 
 /**
