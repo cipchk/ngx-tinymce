@@ -32,8 +32,8 @@ import { RouterLink, RouterOutlet } from '@angular/router';
       </div>
     </nav>
     <p style="line-height: 30px;">Angular for tinymce</p>
-    <div style="margin-top: 16px;"><router-outlet></router-outlet></div>
+    <div style="margin-top: 16px;"><router-outlet /></div>
   `,
-  imports: [RouterOutlet, RouterLink],
+  imports: [RouterOutlet, RouterLink]
 })
-export class App { }
+export class App {}

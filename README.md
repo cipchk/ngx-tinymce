@@ -31,9 +31,9 @@ import { NgxTinymceModule } from 'ngx-tinymce';
       // Local assets
       baseURL: './assets/tinymce/',
       // or cdn
-      baseURL: '//cdnjs.cloudflare.com/ajax/libs/tinymce/5.7.1/',
-    }),
-  ],
+      baseURL: '//cdnjs.cloudflare.com/ajax/libs/tinymce/5.7.1/'
+    })
+  ]
 })
 export class AppModule {}
 ```
@@ -64,7 +64,7 @@ Globa config:
 
 ```ts
 bootstrapApplication(AppComponent, {
-  providers: [provideTinymce({ baseURL: '//cdn.tiny.cloud/1/no-api-key/tinymce/6/' })],
+  providers: [provideTinymce({ baseURL: '//cdn.tiny.cloud/1/no-api-key/tinymce/6/' })]
 });
 ```
 
@@ -75,7 +75,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'my-app',
-  template: `<tinymce [(ngModel)]="html"></tinymce>`,
+  template: `<tinymce [(ngModel)]="html"></tinymce>`
 })
 export class AppComponent {
   html = ``;
